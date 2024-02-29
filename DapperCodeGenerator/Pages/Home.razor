@@ -1,0 +1,67 @@
+﻿@page "/"
+@inherits HomeBase
+
+
+@* <EditForm Model="@Model" FormName="frmModel" OnValidSubmit="HandleValidSubmitAsync">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="mb-3">
+        <label for="idPropertyName" class="form-label" >PropertyName</label>
+        <div>
+            <InputText id="idPropertyName" class="form-control" @bind-Value="@Model.PropertyName" placeholder="PropertyName..." />
+            <ValidationMessage For="@(() => Model.PropertyName)" />
+        </div>
+    </div>
+    <button class="btn btn-primary" type="submit">Add Model</button>
+</EditForm> *@
+
+
+
+<h1>Blazor Dapper Code Generator</h1>
+<p>Creates barebones code for Blazor Dapper CRUD for one database table. Note that the <strong>Namespace</strong> name is the name of your project folder (also the name of the solution). For best results <strong>make the first field the primary key</strong>, and include a <strong>Bit field named IsActive</strong>.</p>
+<div class="controls">
+    <EditForm  Model="@CodeTemplate" FormName="FrmCodeGenerator" OnValidSubmit="GenerateCode">
+        <div class="lefthalf">
+            <table>
+                <tr>
+                    <td>Namespace:</td>
+                    <td>
+                        <input type="text" @bind="@CodeTemplate!.NamespaceName" required/><br/>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <span class="muted">Case Sensitive project folder name</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Make sure the name you provide <em>exactly</em> matches the folder name of your product, no spaces! </td>
+                </tr>
+
+            </table>
+
+        </div>
+        <div class="righthalf">
+            <p>Paste the SQL CREATE TABLE code below so this app can see the table name, field names, and data types. Just from CREATE TABLE to the end of the last column definition.</p>
+            <textarea rows="10" @bind="@CodeTemplate.TableDesign" required>
+
+
+</textarea>
+            <p style="text-align:center">
+                <input type="submit" value="Generate Code">
+
+            </p>
+        </div>
+    </EditForm>
+</div>
+<code>
+    <pre>
+    @CodeTemplate.GeneratedCode
+</pre>
+</code>
+<p style="clear:both;">To get the SQL Server CREATE TABLE statement in SQL Server Management Studio or SQL Server Object Explorer or a similar tool, right-click the table name, choose Script As > CREATE To > New Query Window and select the SQL code from CREATE TABLE to the end of the last column definition. If you get it wrong, this won't work.</p>
+<p style="text-align:center">
+    <img src="../images/Instruction.png"/>
+</p>
