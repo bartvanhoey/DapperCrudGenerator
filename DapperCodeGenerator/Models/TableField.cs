@@ -1,28 +1,17 @@
+using static DapperCodeGenerator.Services.TypeMapper;
+using static DapperCodeGenerator.Utils.Util;
+
 namespace DapperCodeGenerator.Models
 {
-    public class Tablefield
+    public class TableField(
+        string fieldName)
     {
-        // Auto-implemented properties.
-        public string Fieldname { get; set; }
-        public string SQLtype { get; set; }
-        public string Codetype { get; set; }
-        public string DBtype { get; set; }
-        public int Length { get; set; }
-        public bool IsRequired { get; set; }
-        
-        public Tablefield()
-        {
-
-        }
-
-        public Tablefield(string fieldname, string sqlytpe, string codetype, string dbtype, int length, bool isrequired)
-        {
-            this.Fieldname = fieldname;
-            this.SQLtype = sqlytpe;
-            this.Codetype = codetype;
-            this.DBtype = dbtype;
-            this.Length = length;
-            this.IsRequired = isrequired;
-        }
+        public string ColumnName { get;  } = GetColumnName(fieldName);
+        public string DataType { get;  } =  GetDataType(fieldName);
+        public string? DotNetType { get;  } = GetDotNetType(fieldName);
+        public string? DbType { get;  } = GetDbType(fieldName);
+        public int Length { get;  } = GetColumnLength(fieldName);
+        public bool IsRequired { get;  } = fieldName[^4..] == " NOT";
     }
 }
+

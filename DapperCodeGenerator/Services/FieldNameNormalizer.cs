@@ -1,5 +1,5 @@
-using System.Text.RegularExpressions;
 using DapperCodeGenerator.Models;
+using static DapperCodeGenerator.Services.TypeMapper;
 
 namespace DapperCodeGenerator.Services
 {
@@ -7,7 +7,7 @@ namespace DapperCodeGenerator.Services
     {
         private string _shortfieldlist = "";
         private string _primaryKey = "";
-        private string _modelfield = "";
+        private string _modelProperty = "";
         private string _sqldelete = "";
         private string _sqlselectlist = "";
         private string _sqlselectone = "";
@@ -23,98 +23,68 @@ namespace DapperCodeGenerator.Services
         private string _sqlDateSearchWhereClause = "";
 
 
-        public async Task<List<Tablefield>> NormalizeFieldNames(string rawText, string objectName, string tableName)
+        public async Task<List<TableField>> NormalizeFieldNames(string rawText, string objectName, string tableName)
         {
             var rawTemplate = await httpClient.GetStringAsync("BlazorDapperTemplate.txt");
 
-            var tableFields = new List<Tablefield>();
+            var tableFields = new List<TableField>();
             var fieldNames = rawText.Split("NULL,").Select(x => x.Trim()).ToList();
             var tableHeadings = "";
             var tableRows = "";
             var confirmDeleteRows = "";
             var parametersAddUpdateOnly = string.Empty;
             var counter = 1;
-            foreach (var fieldNameTrimmed in fieldNames)
+            
+            foreach (var fieldName in fieldNames)
             {
-                if (fieldNameTrimmed.Length <= 0) continue;
-                var columnName = fieldNameTrimmed.Substring(1, fieldNameTrimmed.IndexOf(']') - 1);
-                columnName = char.ToUpper(columnName[0]) + columnName[1..];
+                if (fieldName.Length <= 0) continue;
+                var tableField = new TableField(fieldName);
+                tableFields.Add(tableField);
+                
                 // Primary key column plus 6 more fields...just a wild guess.
                 if (counter is > 1 and < 7)
                 {
-                    tableHeadings += "<th>" + columnName + "</th>";
-                    tableRows += "<td>@" + objectName + "." + columnName + "</td>";
-                    _shortfieldlist += columnName + ", ";
+                    tableHeadings += "<th>" + tableField.ColumnName + "</th>";
+                    tableRows += "<td>@" + objectName + "." + tableField.ColumnName + "</td>";
+                    _shortfieldlist += tableField.ColumnName + ", ";
                 }
-
-                var isRequired = fieldNameTrimmed[^4..] == " NOT";
-                // Isolate the data time
-                var datatype = fieldNameTrimmed[(fieldNameTrimmed.IndexOf(']') + 2)..];
-                datatype = datatype.Replace("IDENTITY(1,1) ", "");
-                datatype = datatype.Replace("IDENTITY (1, 1) ", "");
-                datatype = datatype.Replace("NULL", "").Replace("NOT", "");
-                datatype = datatype.Replace("[", "").Replace("]", "").Trim();
-
-                //Remove the parens and number (if any) from the datatype.
-                var temptype = RemoveNonAlphaCharacters(datatype).Trim().ToLower();
-                var nettype = TypeMapper.GetNetType(temptype);
-                var dbtype = TypeMapper.GetDBType(temptype);
-                // If it's any kind of "char" field, grab the length
-                var maxlength = 0;
-                if (datatype.Contains("char"))
-                {
-                    // Look for the length if it's any kind of char field.
-                    var charlength = KeepNumbersOnly(datatype);
-                    int number;
-                    var success = int.TryParse(charlength, out number);
-                    if (success)
-                    {
-                        maxlength = number;
-                    }
-                }
-
-                var tableField = new Tablefield(columnName, datatype, nettype, dbtype, maxlength, isRequired);
-                tableFields.Add(tableField);
-                counter += 1;
+                counter++;
             }
 
-            // Looping through here, throws error in generate() method.
+            
             counter = 1;
+            var sprocOneParam = "";
+            var sprocAllParams = "";
+            var sprocInsertParams = "";
 
-            var sprocOneparam = "";
-            var sprocAllparams = "";
-            var sprocInsertparams = "";
-
-
+            for (int i = 0; i < tableFields.Count; i++)
+            {
+                
+            }
+            
             foreach (var tableField in tableFields)
             {
-                if (tableField.IsRequired && tableField.Fieldname != _primaryKey)
-                {
-                    _modelfield += "[Required]\n";
-                }
+                if (tableField.IsRequired && tableField.ColumnName != _primaryKey) _modelProperty += "[Required]\n";
+                if (tableField.Length > 0) _modelProperty += "[StringLength(" + tableField.Length + ")]\n";
+                _modelProperty += "public " + tableField.DotNetType + " " + tableField.ColumnName + " { get; set; }\n";
 
-                if (tableField.Length > 0)
-                {
-                    _modelfield += "[StringLength(" + tableField.Length + ")]\n";
-                }
+                sprocAllParams += "@" + tableField.ColumnName + " " + tableField.DataType + ",\n";
 
-                _modelfield += "public " + tableField.Codetype + " " + tableField.Fieldname + " { get; set; }\n";
-                sprocAllparams += "@" + tableField.Fieldname + " " + tableField.SQLtype + ",\n";
                 // The first field is assumed to be the key, so we don't include that on paramters for Insert sproc
                 if (counter != 1)
                 {
-                    sprocInsertparams += "@" + tableField.Fieldname + " " + tableField.SQLtype + ",\n";
+                    sprocInsertParams += "@" + tableField.ColumnName + " " + tableField.DataType + ",\n";
                 }
 
                 switch (counter)
                 {
                     case 1:
-                        sprocOneparam = "@" + tableField.Fieldname + " " + tableField.SQLtype;
-                        _primaryKey = tableField.Fieldname;
+                        sprocOneParam = "@" + tableField.ColumnName + " " + tableField.DataType;
+                        _primaryKey = tableField.ColumnName;
                         // The Update stored proc requires the primary key as a parameter, insert doesn't.
-                        parametersAddUpdateOnly = "parameters.Add(" + Convert.ToChar(34) + tableField.Fieldname +
-                                                  Convert.ToChar(34) + ", " + objectName + "." + tableField.Fieldname +
-                                                  ", DbType." + tableField.DBtype + ");\n";
+                        parametersAddUpdateOnly = "parameters.Add(" + Convert.ToChar(34) + tableField.ColumnName +
+                                                  Convert.ToChar(34) + ", " + objectName + "." + tableField.ColumnName +
+                                                  ", DbType." + tableField.DbType + ");\n";
                         _sqldelete = $"DELETE FROM {tableName} WHERE {_primaryKey} = @{_primaryKey}";
                         _sqlselectlist = "SELECT TOP 30 " + _primaryKey;
                         _sqlselectone = "SELECT " + _primaryKey;
@@ -127,14 +97,14 @@ namespace DapperCodeGenerator.Services
                     // ===================================================================================================== Input tags for adding and editing, never the primary key.
                     case > 1:
                     {
-                        _parametersadd += "parameters.Add(" + Convert.ToChar(34) + tableField.Fieldname +
-                                         Convert.ToChar(34) + ", " + objectName + "." + tableField.Fieldname +
-                                         ", DbType." + tableField.DBtype + ");\n";
+                        _parametersadd += "parameters.Add(" + Convert.ToChar(34) + tableField.ColumnName +
+                                          Convert.ToChar(34) + ", " + objectName + "." + tableField.ColumnName +
+                                          ", DbType." + tableField.DbType + ");\n";
                         //inputtag += "<tr><td>" + fld.Fieldname + ":</td><td><input type=" + Convert.ToChar(34) + TypeMapper.GetHtmlType(fld.Codetype) + Convert.ToChar(34) + " @bind=" + Convert.ToChar(34) + objectname + "." + fld.Fieldname + Convert.ToChar(34);
-                        var cappedType = TypeMapper.GetHtmlType(tableField.Codetype);
+                        var cappedType = GetHtmlType(tableField.DotNetType);
                         cappedType = char.ToUpper(cappedType[0]) + cappedType.Substring(1);
                         //If the data type in SQL is Text, then use TextArea rather than Input'
-                        if (tableField.SQLtype == "text")
+                        if (tableField.DataType == "text")
                         {
                             cappedType = "TextArea";
                         }
@@ -144,24 +114,24 @@ namespace DapperCodeGenerator.Services
                             _inputtag += "<div class='row'>\n";
                         }
 
-                        _inputtag += "<div class='col-2'>\n<label for = '" + tableField.Fieldname + "'>" +
-                                    tableField.Fieldname + ":</label>\n</div>\n<div class='col-4'>\n<Input" +
-                                    cappedType + " @bind-Value = " + Convert.ToChar(34) + objectName + "." +
-                                    tableField.Fieldname + Convert.ToChar(34) + " class='form-control'";
+                        _inputtag += "<div class='col-2'>\n<label for = '" + tableField.ColumnName + "'>" +
+                                     tableField.ColumnName + ":</label>\n</div>\n<div class='col-4'>\n<Input" +
+                                     cappedType + " @bind-Value = " + Convert.ToChar(34) + objectName + "." +
+                                     tableField.ColumnName + Convert.ToChar(34) + " class='form-control'";
 
-                        if (tableField.SQLtype.Contains("varchar") || tableField.SQLtype.Contains("text"))
+                        if (tableField.DataType.Contains("varchar") || tableField.DataType.Contains("text"))
                         {
                             _inputtag += " style='width:100%;'";
                         }
 
                         //The date ranges don't work in the model, so adding here.
-                        if (tableField.SQLtype.Contains("date"))
+                        if (tableField.DataType.Contains("date"))
                         {
                             _inputtag += " min=" + Convert.ToChar(34) + "1753-01-01" + Convert.ToChar(34) + " max=" +
-                                        Convert.ToChar(34) + "9999-12-31" + Convert.ToChar(34);
+                                         Convert.ToChar(34) + "9999-12-31" + Convert.ToChar(34);
                         }
 
-                        _inputtag += " id = '" + tableField.Fieldname + "'/></div>\n";
+                        _inputtag += " id = '" + tableField.ColumnName + "'/></div>\n";
                         if (counter % 2 != 0)
                         {
                             _inputtag += "</div>\n";
@@ -184,49 +154,49 @@ namespace DapperCodeGenerator.Services
                         //    inputtag += " required ";
                         //}
                         //inputtag += "></td></tr>";
-                        confirmDeleteRows += "<div class='form-group'>" + tableField.Fieldname + ":@" + objectName +
-                                             "." + tableField.Fieldname + "</div>\n";
+                        confirmDeleteRows += "<div class='form-group'>" + tableField.ColumnName + ":@" + objectName +
+                                             "." + tableField.ColumnName + "</div>\n";
                         // For the initial List page and date search I show ony the first five fields, you
                         // may need to adjust in your own app.
                         if (counter < 7)
                         {
-                            _sqlselectlist += ", " + tableField.Fieldname;
+                            _sqlselectlist += ", " + tableField.ColumnName;
                         }
 
-                        _sqlselectone += ", " + tableField.Fieldname;
-                        _sqlfieldsinsert1 += tableField.Fieldname + ", ";
-                        _sqlfieldsinsert2 += "@" + tableField.Fieldname + ", ";
-                        _sqlupdate += tableField.Fieldname + " = @" + tableField.Fieldname + ", ";
+                        _sqlselectone += ", " + tableField.ColumnName;
+                        _sqlfieldsinsert1 += tableField.ColumnName + ", ";
+                        _sqlfieldsinsert2 += "@" + tableField.ColumnName + ", ";
+                        _sqlupdate += tableField.ColumnName + " = @" + tableField.ColumnName + ", ";
                         //convert dates to string for Like search
-                        if (tableField.SQLtype.Contains("date"))
+                        if (tableField.DataType.Contains("date"))
                         {
                             //Isolate the first date or datetime field
                             _iDateCounter += 1;
                             if (_iDateCounter == 1)
                             {
-                                _sqlDateSearchWhereClause = " CAST(" + tableField.Fieldname +
-                                                           " AS Date) Between @startDate AND @endDate";
+                                _sqlDateSearchWhereClause = " CAST(" + tableField.ColumnName +
+                                                            " AS Date) Between @startDate AND @endDate";
                             }
 
                             //sqlsearchflds += "CONVERT(varchar(12)," + fld.Fieldname + ",101) AS " + fld.Fieldname + ", ";
-                            _sqlsearch += "CONVERT(varchar(12)," + tableField.Fieldname +
-                                         ",101) LIKE + '%' + @param + '%' OR ";
+                            _sqlsearch += "CONVERT(varchar(12)," + tableField.ColumnName +
+                                          ",101) LIKE + '%' + @param + '%' OR ";
                         }
 
                         //convert numbers to string for like search
-                        if (tableField.SQLtype.Contains("int") || tableField.SQLtype.Contains("decimal") ||
-                            tableField.SQLtype.Contains("money"))
+                        if (tableField.DataType.Contains("int") || tableField.DataType.Contains("decimal") ||
+                            tableField.DataType.Contains("money"))
                         {
                             //sqlsearchflds += "CAST(" + fld.Fieldname + " AS varchar(20)) AS " + fld.Fieldname + ",";
-                            _sqlsearch += "CAST(" + tableField.Fieldname +
-                                         " AS varchar(20)) LIKE '%' + @param + '%' OR ";
+                            _sqlsearch += "CAST(" + tableField.ColumnName +
+                                          " AS varchar(20)) LIKE '%' + @param + '%' OR ";
                         }
 
                         //No convertsion for text fields
-                        if (tableField.SQLtype.Contains("text") || tableField.SQLtype.Contains("char"))
+                        if (tableField.DataType.Contains("text") || tableField.DataType.Contains("char"))
                         {
                             //sqlsearchflds += fld.Fieldname + ",";
-                            _sqlsearch += tableField.Fieldname + " LIKE '%' + @param + '%' OR ";
+                            _sqlsearch += tableField.ColumnName + " LIKE '%' + @param + '%' OR ";
                         }
 
                         break;
@@ -236,14 +206,14 @@ namespace DapperCodeGenerator.Services
                 counter += 1;
             }
 
-            sprocAllparams = sprocAllparams[..^2];
-            sprocInsertparams = sprocInsertparams[..^2];
+            sprocAllParams = sprocAllParams[..^2];
+            sprocInsertParams = sprocInsertParams[..^2];
             rawTemplate = rawTemplate.Replace("@@PK", _primaryKey);
-            rawTemplate = rawTemplate.Replace("@@spOneParam", sprocOneparam);
-            rawTemplate = rawTemplate.Replace("@@spAllParams", sprocAllparams);
-            rawTemplate = rawTemplate.Replace("@@spInsertParams", sprocInsertparams);
+            rawTemplate = rawTemplate.Replace("@@spOneParam", sprocOneParam);
+            rawTemplate = rawTemplate.Replace("@@spAllParams", sprocAllParams);
+            rawTemplate = rawTemplate.Replace("@@spInsertParams", sprocInsertParams);
             rawTemplate = rawTemplate.Replace("@@OBJECTNAME", objectName);
-            rawTemplate = rawTemplate.Replace("@@MODELCODE", _modelfield);
+            rawTemplate = rawTemplate.Replace("@@MODELCODE", _modelProperty);
             rawTemplate = rawTemplate.Replace("@@PARAMETERADDUPDATEONLY", parametersAddUpdateOnly);
             rawTemplate = rawTemplate.Replace("@@PARAMETERSADD", _parametersadd);
             rawTemplate = rawTemplate.Replace("@@PRIMARYKEY", _primaryKey);
@@ -251,6 +221,8 @@ namespace DapperCodeGenerator.Services
             rawTemplate = rawTemplate.Replace("@@FIELDNAMESTABLEHEADING", tableHeadings);
             rawTemplate = rawTemplate.Replace("@@FIELDNAMESTABLEROW", tableRows);
             rawTemplate = rawTemplate.Replace("@@CONFIRMDELETEROWS", confirmDeleteRows);
+            
+            
             //Remove extra comma and space at the end of field names.
             _sqlfieldsinsert1 = _sqlfieldsinsert1[..^2];
             _sqlfieldsinsert2 = _sqlfieldsinsert2[..^2];
@@ -271,10 +243,5 @@ namespace DapperCodeGenerator.Services
 
             return tableFields;
         }
-
-        private static string RemoveNonAlphaCharacters(string input) =>
-            Regex.Replace(input, @"[^a-zA-Z\._]", string.Empty);
-
-        private static string KeepNumbersOnly(string input) => Regex.Replace(input, @"[^0-9.]", string.Empty);
     }
 }

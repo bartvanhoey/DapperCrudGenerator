@@ -1,19 +1,19 @@
 using DapperCodeGenerator.Models;
 using DapperCodeGenerator.Services;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
 using Pluralize.NET.Core;
 
 namespace DapperCodeGenerator.Pages
 {
     public class HomeBase : ComponentBase
     {
-        protected CodeTemplate? CodeTemplate = new();
+        protected readonly CodeTemplate? CodeTemplate = new();
 
         [Inject]
-        public IFieldNameNormalizer FieldNormalizer { get; set; }
+        public IFieldNameNormalizer? FieldNormalizer { get; set; }
         
-
-        public async Task GenerateCode()
+        public async Task GenerateCode(EditContext editContext)
         {
             if (CodeTemplate == null) return;
             var nameSpaceName = CodeTemplate.NamespaceName;
@@ -49,7 +49,8 @@ namespace DapperCodeGenerator.Pages
 
 
              
-            var normalizeFieldNames = FieldNormalizer.NormalizeFieldNames(tableInfo, objectName, tableName);
+            var normalizeFieldNames = await FieldNormalizer!
+                    .NormalizeFieldNames(tableInfo, objectName, tableName);
 
 
             Console.WriteLine(tableInfo);
