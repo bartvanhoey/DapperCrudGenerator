@@ -1,0 +1,9 @@
+-- Stored Procedure for SELECT LIKE
+CREATE PROCEDURE sp@@CLASSNAME_Search
+-- One parameter required to identify row to delete.
+@Param varchar(128)
+AS
+BEGIN
+-- SQL for search looking for embedded content. 
+@@SQLSEARCH 
+END

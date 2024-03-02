@@ -1,0 +1,170 @@
+-- /PAGES/@@CLASSNAMEList.razor
+@using @@NAMESPACE.Data
+@page "/@@LISTPAGENAME"
+@inject I@@CLASSNAMEService @@CLASSNAMEService
+
+<h1 style="text-align:center">@@CLASSNAME List</h1>
+<table id="search-add">
+<tr>
+<td>
+    <!-- Calling @@objectnameaddedit with @@PK of zero configures page for Insert -->
+    <a href="/@@OBJECTNAMEaddedit/0"><span class="oi oi-plus"></span>Add a @@CLASSNAME</a>
+    </td>
+    <td>
+    <span class="oi oi-magnifying-glass" style="color:blue;"></span>
+    <input id="tbSearch" @bind-value="@SearchTerm"  @bind-value:event="oninput" @onkeyup="SearchKeyPress" />
+    &nbsp;<button @onclick="@Search" class="btn btn-primary">Search</button>
+    </td>
+    </tr>
+
+</table>
+<div id="list" style="display:@Listdisplay">
+@if (@@objectlist == null)
+{
+    <p style="text-align:center">
+        <img src="../images/loader.gif" />
+    </p>
+}
+else
+{
+    <table class="genlist">
+        <tr>
+                <!-- Indicates what rows below are showing -->
+                <td colspan="7" style="text-align:left;font-weight:bold;font-size:120%">@Nowshowing</td>
+            </tr>
+        <tr>
+            <th>Edit</th>
+		@@FIELDNAMESTABLEHEADING
+            <th>Delete</th>
+        </tr>
+        @foreach (var @@objectname in @@objectlist)
+        {
+    <tr>
+        <td>
+            <!-- Calling @@objectnameaddedit with @@PK configures page for Update of that table row -->
+            <a href="@@objectnameaddedit/@@@objectname.@@PRIMARYKEY">
+                <span class="oi oi-pencil" style="color:blue;"></span>
+                <!-- If you prefer images, comment below and put images in wwwroot/images folder 
+                <img src="../images/iEdit.png" />-->
+            </a>
+        </td>
+		@@FIELDNAMESTABLEROW
+        <!-- If you want to use a checkmark for a IsActive field, here's the basic code  -->
+        <!-- You have to uncomment and get the field name right -->
+        <!-- <td> -->
+            <!-- Provide your own images in wwwroot/images folder -->
+       <!--     @*Show a green check for active @@objectname...*@ -->
+       <!--     @if (@@objectname.IsActive) -->
+       <!--     { -->
+       <!--     <span class="oi oi-check" style="color:green;"></span> -->
+            <!-- If you prefer images, comment below and put images in wwwroot/images folder 
+       <!--         <img src="../images/iGreenCheck.png" /> -->
+       <!--     } -->
+       <!--     @* ...a red X otherwise *@ -->
+       <!--     else -->
+       <!--     { -->
+       <!--    <span class="oi oi-x" style="color:red;"></span> -->
+       <!--      If you prefer images, comment below and put images in wwwroot/images folder -->
+       <!--         <img src="../images/iRedX.png" />-->
+       <!--     }-->
+       <!-- </td>-->
+        @* This column for deletes *@
+        
+        <td>
+            <a href="@@objectnamedelete/@@@objectname.@@PRIMARYKEY">
+            <span class="oi oi-trash" style="color:red;"></span>
+            <!-- If you prefer images, uncomment the img tag and put images in wwwroot/images
+                <img src="../images/iTrash.png" alt="Delete" title="Delete" /> -->
+            </a>
+        </td>
+    </tr>
+        }
+    </table>
+}
+</div>
+<!-- Error message for to few or to many in search results -->
+<div class="error" style="display:@Errordisplay">
+    <h2>@SearchError</h2>
+</div>
+
+@code {
+    //Variable used for searching (tbSearch)
+    public string SearchTerm { get; set; }
+    public string SearchError = "";
+    public string Listdisplay = "block";
+    public string Errordisplay = "none";
+    public string Nowshowing = "Recent Entries";
+    // Create an empty list, named @@objectlist, of empty @@CLASSNAME objects.
+    IEnumerable<@@CLASSNAME> @@objectlist;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        //Populate the list of @@objectname objects from the @@CLASSNAME table.
+        @@objectlist = await @@CLASSNAMEService.@@CLASSNAMEList();
+    }
+    
+    //Make pressing ENTER in the search box the same as clicking the Search button.
+    private void SearchKeyPress(KeyboardEventArgs ev)
+    {
+        if (ev.Key == "Enter")
+        {
+            //System.Diagnostics.Debug.WriteLine(ev.Key);
+            Search();
+        }
+    }
+    
+    //Do the search
+    private async void Search()
+    {
+    //Forces the progress indicator to show while searching.
+    if (SearchTerm.Length > 0 ) {
+        @@objectlist = null;
+        Nowshowing = "Contains: " + SearchTerm;
+        StateHasChanged();
+        //Does the search and stores result in @@objectlist collection.
+        @@objectlist  = await @@CLASSNAMEService.@@CLASSNAMESearch(SearchTerm);
+        var howmany = @@objectlist.Count();
+        // Show results or error depending on how many found.
+          switch (howmany)
+          {
+            case int n when (n < 1):
+                errorMessage("Not found, please try another search");
+                break;
+            case int n when (n > 250):
+                errorMessage("More than 250 results, please try a different search.");
+                break;
+            default:
+                //Show the search results and count.
+                Nowshowing += " (" + howmany + ")";
+                errorMessage("");
+                StateHasChanged();
+                break;
+          } 
+        } else {
+            //If no search term, just do the default list.
+            Nowshowing = "Recent entries";
+            @@objectlist = await @@CLASSNAMEService.@@CLASSNAMEList();
+            StateHasChanged();
+        }
+
+        //Show or hide the search results error message.
+        void errorMessage(string msgText)
+        {
+            if (msgText.Length > 0)
+            {
+                Listdisplay = "none";
+                Errordisplay = "block";
+                SearchError = msgText;
+            }
+            else
+            {
+                Listdisplay = "block";
+                Errordisplay = "none";
+                SearchError = "";
+            }
+            //Re-render the page.
+            StateHasChanged();
+        }
+        //System.Diagnostics.Debug.WriteLine(howmany);
+    }
+}

@@ -1,0 +1,152 @@
+-- /Pages/@@CLASSNAMEReport.razor
+@using @@NAMESPACE.Data
+@page "/@@REPORTPAGENAME"
+@inject I@@CLASSNAMEService @@CLASSNAMEService
+@inject NavigationManager NavigationManager
+
+  <div id="date-search-tools">
+        <div id="GetDates" style="display:@ToolsVisible">
+        <h1 style="text-align:center">@@CLASSNAME Report</h1>
+            <table>
+                <tr>
+                    <td>
+                        Start Date: <input type="date" id="tbStartDate" @bind-value="@StartDate" />
+                    </td>
+                    <td>
+                        End Date: <input type="date" id="tbEndtDate" @bind-value="@EndDate" @bind-value:event="oninput" @onkeyup="SearchKeyPress" />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="text-align:center;">
+                        &nbsp;<button @onclick="@Search" class="btn btn-primary">Search</button>
+                    </td>
+                </tr>
+
+            </table>
+        </div>
+    </div>
+    <div id="list" style="display:@ReportVisible">
+      <table id="search-buttons">
+            <tr>
+                <td><button class="btn btn-primary" onclick="window.print()">Print or PDF</button></td>
+                <td><button class="btn btn-secondary" onclick="location.href='@@objectnamereport'">Cancel</button>
+                </td>
+            </tr>
+        </table>
+    <h1 style="text-align:center">@@CLASSNAME Report</h1>
+    <p style="text-align:center;">From @StartDate.ToShortDateString() to @EndDate.ToShortDateString()</p>
+        <table class="genlist">
+            <thead>
+                <tr>
+              		@@FIELDNAMESTABLEHEADING
+                </tr>
+            </thead>
+            <tbody>
+                @if (@@objectlist != null)
+                {
+                    @foreach (var @@objectname in @@objectlist)
+                    {
+                    <tr>
+	                   	@@FIELDNAMESTABLEROW
+                    </tr>
+                    }
+                }
+            </tbody>
+        </table>
+        <table id="search-buttons">
+            <tr>
+                <td><button class="btn btn-primary" onclick="window.print()">Print or PDF</button></td>
+                <td><button class="btn btn-secondary" onclick="location.href='@@objectnamereport'">Cancel</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+       <!-- Error message for to few or to many in search results -->
+    <div class="error" style="display:@Errordisplay">
+        <h1>@SearchError</h1>
+    </div>
+   
+   @code {
+        //Variables used for searching
+        public DateTime StartDate { get; set; } = DateTime.Today;
+        public DateTime EndDate { get; set; } = DateTime.Today;
+        public string SearchError = "";
+        public string ToolsVisible = "block";
+        public string ReportVisible = "none";
+        public string Errordisplay = "none";
+
+        // Create an empty list, named videos, of empty Video objects.
+        IEnumerable<@@CLASSNAME> @@objectlist;
+
+        protected override void OnInitialized()
+        {
+            @if (@@objectlist == null)
+            {
+                ShowReport(false);
+            }
+            else
+            {
+                ShowReport(true);
+            }
+            StateHasChanged();
+        }
+
+        //Make pressing ENTER in the search box the same as clicking the Search button.
+        private void SearchKeyPress(KeyboardEventArgs ev)
+        {
+            if (ev.Key == "Enter")
+            {
+                //System.Diagnostics.Debug.WriteLine(ev.Key);
+                Search();
+            }
+        }
+        private void ShowReport(bool ShowRep)
+        {
+            if (ShowRep)
+            {
+                ToolsVisible = "none";
+                ReportVisible = "block";
+            }
+            else
+            {
+                ToolsVisible = "block";
+                ReportVisible = "none";
+            }
+        }
+
+        //Do the search
+        private async void Search()
+        {
+            @@objectlist = null;
+            StateHasChanged();
+            //Does the search and stores result in collection.
+            @@objectlist = await @@CLASSNAMEService.@@CLASSNAMEDateRange(StartDate, EndDate);
+            var howmany = @@objectlist.Count();
+            // Show results or error depending on how many found.
+            if (howmany < 1 ) {
+               errorMessage("Not found, try another search");
+            } else {
+               errorMessage("");
+            }
+            StateHasChanged();
+
+            ////Show or hide the search results error message.
+            void errorMessage(string msgText)
+            {
+                if (msgText.Length > 0)
+                {
+                    ShowReport(false);
+                    Errordisplay = "block";
+                    SearchError = msgText;
+                } else  {
+                    ShowReport(true);
+                    Errordisplay = "none";
+                    SearchError = "";
+                }
+                //Re-render the page.
+                StateHasChanged();
+            }
+
+            //System.Diagnostics.Debug.WriteLine(howmany);
+        }
+    }

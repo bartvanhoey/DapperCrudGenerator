@@ -2,25 +2,10 @@
 @inherits HomeBase
 
 
-@* <EditForm Model="@Model" FormName="frmModel" OnValidSubmit="HandleValidSubmitAsync">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-    <div class="mb-3">
-        <label for="idPropertyName" class="form-label" >PropertyName</label>
-        <div>
-            <InputText id="idPropertyName" class="form-control" @bind-Value="@Model.PropertyName" placeholder="PropertyName..." />
-            <ValidationMessage For="@(() => Model.PropertyName)" />
-        </div>
-    </div>
-    <button class="btn btn-primary" type="submit">Add Model</button>
-</EditForm> *@
-
-
-
 <h1>Blazor Dapper Code Generator</h1>
 <p>Creates barebones code for Blazor Dapper CRUD for one database table. Note that the <strong>Namespace</strong> name is the name of your project folder (also the name of the solution). For best results <strong>make the first field the primary key</strong>, and include a <strong>Bit field named IsActive</strong>.</p>
 <div class="controls">
-    <EditForm  Model="@CodeTemplate" FormName="FrmCodeGenerator" OnValidSubmit="GenerateCode">
+    <EditForm Model="@CodeTemplate" FormName="FrmCodeGenerator" OnValidSubmit="GenerateCode">
         <div class="lefthalf">
             <table>
                 <tr>
@@ -45,7 +30,7 @@
         </div>
         <div class="righthalf">
             <p>Paste the SQL CREATE TABLE code below so this app can see the table name, field names, and data types. Just from CREATE TABLE to the end of the last column definition.</p>
-            <textarea rows="10" @bind="@CodeTemplate.TableDesign" required>
+            <textarea rows="10" @bind="@CodeTemplate.CreateTableStatement" required>
 
 
 </textarea>
@@ -63,5 +48,5 @@
 </code>
 <p style="clear:both;">To get the SQL Server CREATE TABLE statement in SQL Server Management Studio or SQL Server Object Explorer or a similar tool, right-click the table name, choose Script As > CREATE To > New Query Window and select the SQL code from CREATE TABLE to the end of the last column definition. If you get it wrong, this won't work.</p>
 <p style="text-align:center">
-    <img src="../images/Instruction.png"/>
+    @* <img src="../images/Instruction.png"/> *@
 </p>

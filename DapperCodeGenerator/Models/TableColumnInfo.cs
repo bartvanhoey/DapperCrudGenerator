@@ -3,8 +3,7 @@ using static DapperCodeGenerator.Utils.Util;
 
 namespace DapperCodeGenerator.Models
 {
-    public class TableField(
-        string fieldName)
+    public class TableColumnInfo(string fieldName)
     {
         public string ColumnName { get;  } = GetColumnName(fieldName);
         public string DataType { get;  } =  GetDataType(fieldName);

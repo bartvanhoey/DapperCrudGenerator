@@ -1,0 +1,9 @@
+--Stored Procedure for SELECT (one)
+CREATE PROCEDURE sp@@CLASSNAME_GetOne
+-- Needs one parameter for primary key
+@@@PK int
+AS 
+BEGIN
+-- SQL Select for one table row
+@@SQLSELECTONE
+END

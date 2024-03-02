@@ -1,0 +1,46 @@
+-- /Pages/@@CLASSNAMEDelete.razor
+@using @@NAMESPACE.Data
+@page "/@@OBJECTNAMEdelete/{@@PK:int}"
+@inject I@@CLASSNAMEService @@CLASSService
+@inject NavigationManager NavigationManager
+
+
+<h1 style="text-align:center">Delete a @@CLASSNAME</h1>
+<p style="color:red;text-align:center">Are you sure you want to permanently delete this @@objectname? There is no undo!</p>
+
+<table class="genform">
+	@@CONFIRMDELETEROWS
+    <tr>
+        <td colspan="2" style="text-align:center">
+            <button class="btn btn-primary" @onclick="@Delete">Delete</button>
+            <button class="btn btn-secondary" @onclick="@Cancel">Cancel</button>
+        </td>
+    </tr>
+</table>
+
+@code {
+    // Create a new, empty @@CLASSNAME object
+    @@CLASSNAME @@objectname = new @@CLASSNAME();
+
+    [Parameter]
+    public int @@PK { get; set; }
+
+    //Executes on page open..
+    protected override async Task OnInitializedAsync()
+    {
+        @@objectname = await @@CLASSNAMEService.@@CLASSNAME_GetOne(@@PK);
+    }
+    //Executes if user confirms the deletion.
+    protected async Task Delete()
+    {
+        // Delete the row and go back to the list. 
+        // In the SProcedure you can set IsActive to 0 rather than physically delete.
+        await @@CLASSNAMEService.@@CLASSNAMEDelete(@@PK);
+        NavigationManager.NavigateTo("/@@listpagename");
+    }
+    // Executes when user clicks the Cancel button.
+    void Cancel()
+    {
+        NavigationManager.NavigateTo("/@@listpagename");
+    }
+}

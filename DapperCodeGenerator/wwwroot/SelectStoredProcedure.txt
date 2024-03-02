@@ -1,0 +1,8 @@
+--Stored Procedure for SELECT (LIST, just first six fields but you can change in final code.)
+CREATE PROCEDURE sp@@CLASSNAME_List
+--No parameters required.
+AS
+BEGIN
+--SQL for Select stored procedure.
+@@SQLSELECTLIST
+END

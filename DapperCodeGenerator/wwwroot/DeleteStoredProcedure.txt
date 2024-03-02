@@ -1,0 +1,9 @@
+-- Stored Procedure for DELETE
+CREATE PROCEDURE sp@@CLASSNAME_Delete
+-- One parameter required to identify row to delete.
+@@@PK int
+AS
+BEGIN
+-- SQL for Delete stored procedure (physically deletes, you may want to change this to mark inactive)
+@@SQLDELETE
+END

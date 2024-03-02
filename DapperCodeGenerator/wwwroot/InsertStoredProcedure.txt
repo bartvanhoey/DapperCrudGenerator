@@ -1,0 +1,9 @@
+-- Stored Procedure for INSERT
+CREATE PROCEDURE sp@@CLASSNAME_Insert
+--Parameters for Insert stored procedure
+@@spInsertParams
+AS
+BEGIN
+--SQL for Insert stored procedure
+@@SQLINSERT
+END

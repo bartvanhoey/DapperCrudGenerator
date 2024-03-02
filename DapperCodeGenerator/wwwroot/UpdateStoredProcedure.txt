@@ -1,0 +1,9 @@
+-- Stored Procedure for UPDATE
+CREATE PROCEDURE sp@@CLASSNAME_Update
+-- Parameters for Update stored procedure.
+@@spAllParams
+AS
+BEGIN
+-- SQL for Update stored procedure
+@@SQLUPDATE
+END

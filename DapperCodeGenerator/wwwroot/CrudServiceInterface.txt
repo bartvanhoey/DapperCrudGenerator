@@ -1,0 +1,21 @@
+-- /Data/I@@CLASSNAMEService.cs
+// This is the @@CLASSNAME Interface
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace @@NAMESPACE.Data
+{
+    // Each item below provides an interface to a method in @@CLASSNAMEServices.cs
+    public interface I@@CLASSNAMEService
+    {
+        Task<bool> @@CLASSNAMEInsert(@@CLASSNAME @@objectname);
+        Task<IEnumerable<@@CLASSNAME>> @@CLASSNAMEList();
+        Task<IEnumerable<@@CLASSNAME>> @@CLASSNAMESearch(string Param);
+        Task<IEnumerable<@@CLASSNAME>> @@CLASSNAMEDateRange(DateTime @StartDate, DateTime @EndDate);
+        Task<@@CLASSNAME> @@CLASSNAME_GetOne(int @@PK);
+        Task<bool> @@CLASSNAMEUpdate(@@CLASSNAME @@objectname);
+        Task<bool> @@CLASSNAMEDelete(int @@PK);
+        Task<IEnumerable<@@CLASSNAME>> @@CLASSNAME_GetDropdown(int @IncludeNumber);
+    }
+}
