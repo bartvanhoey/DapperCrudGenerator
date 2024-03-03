@@ -3,9 +3,9 @@ using static DapperCodeGenerator.Utils.Util;
 
 namespace DapperCodeGenerator.Models
 {
-    public class TableColumnInfo(string fieldName)
+    public class Column(string fieldName)
     {
-        public string ColumnName { get;  } = GetColumnName(fieldName);
+        public string Name { get;  } = GetColumnName(fieldName);
         public string DataType { get;  } =  GetDataType(fieldName);
         public string? DotNetType { get;  } = GetDotNetType(fieldName);
         public string? DbType { get;  } = GetDbType(fieldName);

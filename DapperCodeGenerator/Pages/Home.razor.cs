@@ -10,9 +10,9 @@ namespace DapperCodeGenerator.Pages
         protected readonly CodeTemplate? CodeTemplate = new();
 
         [Inject]
-        public ITableInfoService? CodeTemplateProcessor { get; set; }
+        public ITemplateProcessor? TemplateProcessor { get; set; }
         
         public async Task GenerateCode(EditContext editContext) 
-            => await CodeTemplateProcessor!.Process(CodeTemplate);
+            => await TemplateProcessor!.Process(CodeTemplate);
     }
 }

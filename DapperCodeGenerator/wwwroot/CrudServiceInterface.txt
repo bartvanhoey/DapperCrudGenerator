@@ -1,12 +1,10 @@
--- /Data/I@@CLASSNAMEService.cs
-// This is the @@CLASSNAME Interface
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using @@NAMESPACE.Models;
 
-namespace @@NAMESPACE.Data
+namespace @@NAMESPACE.Services
 {
-    // Each item below provides an interface to a method in @@CLASSNAMEServices.cs
     public interface I@@CLASSNAMEService
     {
         Task<bool> @@CLASSNAMEInsert(@@CLASSNAME @@objectname);

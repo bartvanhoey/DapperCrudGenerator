@@ -11,7 +11,7 @@ Things you need to do in Visual Studio
 4. Just once per database (not for each table in the database), add the correct connectionstring to appsettings.json (see https://www.youtube.com/watch?v=5XyPWMayg2Q)
 
 "ConnectionStrings":{
-     "SqlDBcontext" : "Your connection string here"
+     "Default" : "Your connection string here"
 }
 
 5. Just once per database (not each table) in  your Data folder create a file named SqlConnectionConfiguration.cs and
@@ -35,11 +35,11 @@ namespace @@NAMESPACE.Data
 6. Just once per database (not each table) put this code just below the line that reads AddSingleton<WeatherForecastService>(); : 
 
 
--------------------- Note that the name sqlDBcontext has to match the name
+-------------------- Note that the name Default has to match the name
 -------------------- that you actually provided in appsetting.json or it won't work.
 
 //SQL database connection (name defined in appsettings.json)
-var SqlConnectionConfiguration = new SqlConnectionConfiguration(Configuration.GetConnectionString("SqlDBcontext"));
+var SqlConnectionConfiguration = new SqlConnectionConfiguration(Configuration.GetConnectionString("Default"));
 
 services.AddSingleton(SqlConnectionConfiguration);
 //Optional for debugging

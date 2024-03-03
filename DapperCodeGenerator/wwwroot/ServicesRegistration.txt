@@ -1,0 +1,7 @@
+
+builder.Services.AddScoped<I@@CLASSNAMEService, @@CLASSNAMEService>();
+
+var sqlConnectionConfiguration = new SqlConnectionConfiguration(builder.Configuration.GetConnectionString("Default") ?? throw new InvalidOperationException());
+builder.Services.AddSingleton(sqlConnectionConfiguration);
+// Optional for debugging
+// builder.Services.AddServerSideBlazor(o => o.DetailedErrors = true);

@@ -5,9 +5,8 @@ namespace @@NAMESPACE.Data
     // In startup.cs add the following with the connectionstring name from appsettings.json inplace of YOURCONNECTIONNAME.
     //  var sqlConnectionConfiguration = new SqlConnectionConfiguration(Configuration.GetConnectionString("YOURCONNECTIONNAME"));
     //  services.AddSingleton(sqlConnectionConfiguration);
-    public class SqlConnectionConfiguration
+    public class SqlConnectionConfiguration(string connectionString)
     {
-        public SqlConnectionConfiguration(string value) => Value = value;
-        public string Value { get; }
+        public string ConnectionString { get; } = connectionString;
     }
 }

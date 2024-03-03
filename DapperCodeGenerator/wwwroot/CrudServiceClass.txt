@@ -1,13 +1,12 @@
--- /DATA/@@CLASSNAMEService.cs
-// This is the service for the @@CLASSNAME class.
 using Dapper;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
+using @@NAMESPACE.Models;
 
-namespace @@NAMESPACE.Data
+namespace @@NAMESPACE.Services
 {
     public class @@CLASSNAMEService : I@@CLASSNAMEService
     {
@@ -116,7 +115,7 @@ namespace @@NAMESPACE.Data
                 IEnumerable<@@CLASSNAME> @@objectlist;
                 using (var conn = new SqlConnection(_configuration.Value))
                     {
-                        @@objectlist; = await conn.QueryAsync<@@CLASSNAME>("sp@@CLASSNAME_GetDropdown", parameters, commandType: CommandType.StoredProcedure);
+                        @@objectlist = await conn.QueryAsync<@@CLASSNAME>("sp@@CLASSNAME_GetDropdown", parameters, commandType: CommandType.StoredProcedure);
                     }
                 return @@objectlist;
             }

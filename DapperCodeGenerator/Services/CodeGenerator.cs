@@ -6,58 +6,100 @@ public class CodeGenerator(HttpClient httpClient) : ICodeGenerator
 {
     private Replacer? Replacer { get; set; }
 
-    public void SetReplacer(Replacer? replacer) => Replacer = replacer;
-    public async Task<string> SqlConnectionConfiguration() 
+    private void SetReplacer(Replacer? replacer) => Replacer = replacer;
+    public async Task<CodeGeneratorResult> Generate(Replacer replacer)
+    {
+
+
+        return new CodeGeneratorResult()
+        {
+            AddNugetPackages = await AddNugetPackages(),
+            SqlConnectionString = await SqlConnectionString(),
+            SqlConnectionConfiguration = await SqlConnectionConfiguration(),
+            RegisterServices = await RegisterServices(),
+            ModelClass = await ModelClass(),
+            ServiceInterface = await CrudServiceInterface(),
+            ServiceClass = await CrudServiceClass(),
+
+            InsertStoredProcedure = await InsertStoredProcedure(),
+            UpdateStoredProcedure = await UpdateStoredProcedure(),
+            SelectStoredProcedure = await SelectStoredProcedure(),
+            SelectOneStoredProcedure = await SelectOneStoredProcedure(),
+            SelectLikeStoredProcedure = await SelectLikeStoredProcedure(),
+            SelectDataRangeStoredProcedure = await SelectDataRangeStoredProcedure(),
+            DeleteStoredProcedure = await DeleteStoredProcedure(),
+
+
+            AddEditRazorPage = await AddEditRazorPage(),
+            ListRazorPage = await ListRazorPage(),
+            ReportRazorPage = await ReportRazorPage(),
+            DeleteRazorPage = await DeleteRazorPage(),
+            NavLinkToList = await NavLinkToList(),
+            CssStyling = await CssStyling()
+        };
+    }
+
+    private async Task<string> AddNugetPackages()
+        => await ReplacePlaceholders("AddNugetPackages.txt");
+
+    private async Task<string> SqlConnectionString()
+        => await ReplacePlaceholders("SqlConnectionStrings.txt");
+
+    private async Task<string> SqlConnectionConfiguration() 
         => await ReplacePlaceholders("SqlConnectionConfiguration.txt");
 
-    public async Task<string> InsertStoredProcedure() 
+    private async Task<string> InsertStoredProcedure() 
         => await ReplacePlaceholders("InsertStoredProcedure.txt");
 
-    public async Task<string> UpdateStoredProcedure()
+    private async Task<string> UpdateStoredProcedure()
         => await ReplacePlaceholders("UpdateStoredProcedure.txt");
 
-    public async Task<string> SelectStoredProcedure()
+    private async Task<string> SelectStoredProcedure()
         => await ReplacePlaceholders("SelectStoredProcedure.txt");
 
-    public async Task<string> SelectOneStoredProcedure()
+    private async Task<string> SelectOneStoredProcedure()
         => await ReplacePlaceholders("SelectOneStoredProcedure.txt");
 
-    public async Task<string> SelectLikeStoredProcedure()
+    private async Task<string> SelectLikeStoredProcedure()
         => await ReplacePlaceholders("SelectLikeStoredProcedure.txt");
 
-    public async Task<string> SelectDataRangeStoredProcedure()
+    private async Task<string> SelectDataRangeStoredProcedure()
         => await ReplacePlaceholders("SelectDataRangeStoredProcedure.txt");
 
-    public async Task<string> DeleteStoredProcedure()
+    private async Task<string> DeleteStoredProcedure()
         => await ReplacePlaceholders("DeleteStoredProcedure.txt");
 
-    public async Task<string> ModelClass()
+    private async Task<string> ModelClass()
         => await ReplacePlaceholders("ModelClass.txt");
 
-    public async Task<string> CrudServiceInterface()
+    private async Task<string> CrudServiceInterface()
         => await ReplacePlaceholders("CrudServiceInterface.txt");
     
 
-    public async Task<string> CrudServiceClass()
+    private async Task<string> CrudServiceClass()
         => await ReplacePlaceholders("CrudServiceClass.txt");
 
-    public async Task<string> AddEditRazorPage()
+    private async Task<string> AddEditRazorPage()
         => await ReplacePlaceholders("RazorPageAddEdit.txt");
 
-    public async Task<string> ListRazorPage()
+    private async Task<string> ListRazorPage()
         => await ReplacePlaceholders("RazorPageList.txt");
 
-    public async Task<string> ReportRazorPage()
+    private async Task<string> ReportRazorPage()
         => await ReplacePlaceholders("RazorPageReport.txt");
 
-    public async Task<string> DeleteRazorPage()
+    private async Task<string> DeleteRazorPage()
         => await ReplacePlaceholders("RazorPageDelete.txt");
 
-    public async Task<string> NavLinkToList()
+    private async Task<string> NavLinkToList()
         => await ReplacePlaceholders("NavLinkToList.txt");
 
-    public async Task<string> CssStyling()
+    private async Task<string> CssStyling()
         => await ReplacePlaceholders("CssStyling.txt");
+
+    private async Task<string> RegisterServices()
+        => await ReplacePlaceholders("ServicesRegistration.txt");
+    
 
     private async Task<string> ReplacePlaceholders(string fileName)
     {

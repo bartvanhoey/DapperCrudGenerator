@@ -1,0 +1,2 @@
+dotnet add package Dapper
+dotnet add Microsoft.Data.SqlClient

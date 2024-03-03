@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using static System.String;
 using static DapperCodeGenerator.Utils.Util;
 
 namespace DapperCodeGenerator.Services
@@ -44,9 +45,9 @@ namespace DapperCodeGenerator.Services
         };
 
         private static string GetAlphaCharactersOnly(string input) =>
-            Regex.Replace(input, @"[^a-zA-Z\._]", string.Empty);
+            Regex.Replace(input, @"[^a-zA-Z\._]", Empty);
 
-        public static string? GetDotNetType(string fieldName) 
+        public static string? GetDotNetType(string fieldName)
             => SqlDotNetTypes.GetValueOrDefault(GetAlphaCharactersOnly(GetDataType(fieldName)));
 
         private static readonly Dictionary<string, string> HtmlTypes = new()
@@ -69,8 +70,9 @@ namespace DapperCodeGenerator.Services
             { "xml", "string" }
         };
 
-        public static string? GetHtmlType(string word) => HtmlTypes.GetValueOrDefault(word);
- 
+        public static string? GetHtmlType(string? dotnetType) =>
+            IsNullOrWhiteSpace(dotnetType) ? "" : HtmlTypes.GetValueOrDefault(dotnetType);
+
         private static readonly Dictionary<string, string> DbTypes = new()
         {
             { "bigint", "Int64" },
@@ -109,7 +111,7 @@ namespace DapperCodeGenerator.Services
             { "xml", "Xml" },
         };
 
-        public static string? GetDbType(string fieldName) 
+        public static string? GetDbType(string fieldName)
             => DbTypes.GetValueOrDefault(GetAlphaCharactersOnly(GetDataType(fieldName)));
     }
 }

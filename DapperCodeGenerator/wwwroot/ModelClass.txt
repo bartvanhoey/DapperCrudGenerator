@@ -1,8 +1,7 @@
--- /DATA/@@CLASSNAME.cs
 using System;
 using System.ComponentModel.DataAnnotations;
-// This is the model for one row in the database table. You may need to make some adjustments.
-namespace @@NAMESPACE.Data
+
+namespace @@NAMESPACE.Models
 {
     public class @@CLASSNAME
     {

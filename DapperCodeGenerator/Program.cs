@@ -8,7 +8,7 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-builder.Services.AddScoped<ITableInfoService, TableInfoService>();
+builder.Services.AddScoped<ITemplateProcessor, TemplateProcessor>();
 builder.Services.AddScoped<ICodeGenerator, CodeGenerator>();
 
 

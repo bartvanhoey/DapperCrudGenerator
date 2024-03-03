@@ -1,8 +1,0 @@
-
-services.AddScoped<I@@CLASSNAMEService, @@CLASSNAMEService>();
-
-//SQL database connection (name defined in appsettings.json)
-var SqlConnectionConfiguration = new SqlConnectionConfiguration(Configuration.GetConnectionString("SqlDBcontext"));
-services.AddSingleton(SqlConnectionConfiguration);
-// Optional for debugging
-// services.AddServerSideBlazor(o => o.DetailedErrors = true);
