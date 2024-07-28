@@ -1,3 +1,3 @@
 "ConnectionStrings":{
-     "Default": "server=(localdb)\\MSSQLLocalDB;database=@@NAMESPACEDb;Trusted_Connection=true"
+     "Default": "server=(localdb)\\MSSQLLocalDB;database=@@NameSpaceDb;Trusted_Connection=true"
 }

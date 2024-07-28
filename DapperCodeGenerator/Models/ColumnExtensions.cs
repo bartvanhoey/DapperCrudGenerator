@@ -47,4 +47,47 @@ public static class ColumnExtensions
         }
         return inputTag;
     }
+    
+    public static string GetSqlSearchStatement(this Column column)
+    {
+        var sqlSearch = "";
+        if (column.DataType.Contains("date"))
+        {
+            sqlSearch += $"CONVERT(varchar(12),{column.Name},101) LIKE + '%' + @param + '%' OR ";
+        }
+
+        //convert numbers to string for like search
+        if (column.DataType.Contains("int") || column.DataType.Contains("decimal") ||
+            column.DataType.Contains("money"))
+        {
+            sqlSearch += $"CAST({column.Name} AS varchar(20)) LIKE '%' + @param + '%' OR ";
+        }
+
+        //No conversion for text fields
+        if (column.DataType.Contains("text") || column.DataType.Contains("char"))
+        {
+            sqlSearch += column.Name + " LIKE '%' + @param + '%' OR ";
+        }
+
+        return sqlSearch;
+    }
+    
+    public static string GetModelProperties(this Column column, string primaryKey)
+    {
+        var modelProperties = Empty;
+        if (column.IsRequired && column.Name != primaryKey) modelProperties += "[Required]\n";
+        if (column.Length > 0) modelProperties += $"[StringLength({column.Length})]\n";
+        modelProperties += $"public {column.DotNetType} {column.Name} {{ get; set; }}\n";
+        return modelProperties;
+    }
+    
+    public static string GetSqlDateSearchWhereClause(this Column column, int dateCounter)
+    {
+        //convert dates to string for Like search
+        if (!column.DataType.Contains("date")) return Empty;
+        //Isolate the first date or datetime field
+        dateCounter += 1;
+        return dateCounter == 1 ? $" CAST({column.Name} AS Date) Between @startDate AND @endDate" : Empty;
+    }
+    
 }

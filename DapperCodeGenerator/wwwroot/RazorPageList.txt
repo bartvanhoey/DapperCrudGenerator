@@ -1,14 +1,14 @@
--- /PAGES/@@CLASSNAMEList.razor
-@using @@NAMESPACE.Data
-@page "/@@LISTPAGENAME"
-@inject I@@CLASSNAMEService @@CLASSNAMEService
+-- /PAGES/@@ClassNameList.razor
+@using @@NameSpace.Data
+@page "/@@ListPageName"
+@inject I@@ClassNameService @@ClassNameService
 
-<h1 style="text-align:center">@@CLASSNAME List</h1>
+<h1 style="text-align:center">@@ClassName List</h1>
 <table id="search-add">
 <tr>
 <td>
-    <!-- Calling @@objectnameaddedit with @@PK of zero configures page for Insert -->
-    <a href="/@@OBJECTNAMEaddedit/0"><span class="oi oi-plus"></span>Add a @@CLASSNAME</a>
+    <!-- Calling @@ObjectNameaddedit with @@PrimaryKey of zero configures page for Insert -->
+    <a href="/@@ObjectNameaddedit/0"><span class="oi oi-plus"></span>Add a @@ClassName</a>
     </td>
     <td>
     <span class="oi oi-magnifying-glass" style="color:blue;"></span>
@@ -19,7 +19,7 @@
 
 </table>
 <div id="list" style="display:@Listdisplay">
-@if (@@objectlist == null)
+@if (@@ObjectList == null)
 {
     <p style="text-align:center">
         <img src="../images/loader.gif" />
@@ -34,27 +34,27 @@ else
             </tr>
         <tr>
             <th>Edit</th>
-		@@FIELDNAMESTABLEHEADING
+		@@FieldNamesStableHeading
             <th>Delete</th>
         </tr>
-        @foreach (var @@objectname in @@objectlist)
+        @foreach (var @@ObjectName in @@ObjectList)
         {
     <tr>
         <td>
-            <!-- Calling @@objectnameaddedit with @@PK configures page for Update of that table row -->
-            <a href="@@objectnameaddedit/@@@objectname.@@PRIMARYKEY">
+            <!-- Calling @@ObjectNameaddedit with @@PrimaryKey configures page for Update of that table row -->
+            <a href="@@ObjectNameaddedit/@@@ObjectName.@@PRIMARYKEY">
                 <span class="oi oi-pencil" style="color:blue;"></span>
                 <!-- If you prefer images, comment below and put images in wwwroot/images folder 
                 <img src="../images/iEdit.png" />-->
             </a>
         </td>
-		@@FIELDNAMESTABLEROW
+		@@FieldNamesStableRow
         <!-- If you want to use a checkmark for a IsActive field, here's the basic code  -->
         <!-- You have to uncomment and get the field name right -->
         <!-- <td> -->
             <!-- Provide your own images in wwwroot/images folder -->
-       <!--     @*Show a green check for active @@objectname...*@ -->
-       <!--     @if (@@objectname.IsActive) -->
+       <!--     @*Show a green check for active @@ObjectName...*@ -->
+       <!--     @if (@@ObjectName.IsActive) -->
        <!--     { -->
        <!--     <span class="oi oi-check" style="color:green;"></span> -->
             <!-- If you prefer images, comment below and put images in wwwroot/images folder 
@@ -71,7 +71,7 @@ else
         @* This column for deletes *@
         
         <td>
-            <a href="@@objectnamedelete/@@@objectname.@@PRIMARYKEY">
+            <a href="@@ObjectNamedelete/@@@ObjectName.@@PRIMARYKEY">
             <span class="oi oi-trash" style="color:red;"></span>
             <!-- If you prefer images, uncomment the img tag and put images in wwwroot/images
                 <img src="../images/iTrash.png" alt="Delete" title="Delete" /> -->
@@ -94,13 +94,13 @@ else
     public string Listdisplay = "block";
     public string Errordisplay = "none";
     public string Nowshowing = "Recent Entries";
-    // Create an empty list, named @@objectlist, of empty @@CLASSNAME objects.
-    IEnumerable<@@CLASSNAME> @@objectlist;
+    // Create an empty list, named @@ObjectList, of empty @@ClassName objects.
+    IEnumerable<@@ClassName> @@ObjectList;
     
     protected override async Task OnInitializedAsync()
     {
-        //Populate the list of @@objectname objects from the @@CLASSNAME table.
-        @@objectlist = await @@CLASSNAMEService.@@CLASSNAMEList();
+        //Populate the list of @@ObjectName objects from the @@ClassName table.
+        @@ObjectList = await @@ClassNameService.@@ClassNameList();
     }
     
     //Make pressing ENTER in the search box the same as clicking the Search button.
@@ -118,12 +118,12 @@ else
     {
     //Forces the progress indicator to show while searching.
     if (SearchTerm.Length > 0 ) {
-        @@objectlist = null;
+        @@ObjectList = null;
         Nowshowing = "Contains: " + SearchTerm;
         StateHasChanged();
-        //Does the search and stores result in @@objectlist collection.
-        @@objectlist  = await @@CLASSNAMEService.@@CLASSNAMESearch(SearchTerm);
-        var howmany = @@objectlist.Count();
+        //Does the search and stores result in @@ObjectList collection.
+        @@ObjectList  = await @@ClassNameService.@@ClassNameSearch(SearchTerm);
+        var howmany = @@ObjectList.Count();
         // Show results or error depending on how many found.
           switch (howmany)
           {
@@ -143,7 +143,7 @@ else
         } else {
             //If no search term, just do the default list.
             Nowshowing = "Recent entries";
-            @@objectlist = await @@CLASSNAMEService.@@CLASSNAMEList();
+            @@ObjectList = await @@ClassNameService.@@ClassNameList();
             StateHasChanged();
         }
 

@@ -7,12 +7,12 @@ namespace DapperCodeGenerator.Pages
 {
     public class HomeBase : ComponentBase
     {
-        protected readonly CodeTemplate? CodeTemplate = new();
+        protected readonly Template? Template = new();
 
         [Inject]
         public ITemplateProcessor? TemplateProcessor { get; set; }
         
         public async Task GenerateCode(EditContext editContext) 
-            => await TemplateProcessor!.Process(CodeTemplate);
+            => await TemplateProcessor!.Process(Template);
     }
 }

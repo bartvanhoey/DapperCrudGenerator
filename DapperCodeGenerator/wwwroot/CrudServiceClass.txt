@@ -4,120 +4,120 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
-using @@NAMESPACE.Models;
+using @@NameSpace.Models;
 
-namespace @@NAMESPACE.Services
+namespace @@NameSpace.Services
 {
-    public class @@CLASSNAMEService : I@@CLASSNAMEService
+    public class @@ClassNameService : I@@ClassNameService
     {
         // Database connection
         private readonly SqlConnectionConfiguration _configuration;
-        public @@CLASSNAMEService(SqlConnectionConfiguration configuration)
+        public @@ClassNameService(SqlConnectionConfiguration configuration)
         {
             _configuration = configuration;
         }
-        // Add (create) a @@CLASSNAME table row (SQL Insert)
+        // Add (create) a @@ClassName table row (SQL Insert)
         // This only works if you're already created the stored procedure.
-        public async Task<bool> @@CLASSNAMEInsert(@@CLASSNAME @@objectname)
+        public async Task<bool> @@ClassNameInsert(@@ClassName @@ObjectName)
         {
             using (var conn = new SqlConnection(_configuration.Value))
             {
                 var parameters = new DynamicParameters();
-			@@PARAMETERSADD
+			@@ParametersAdd
                 // Stored procedure method
-                await conn.ExecuteAsync("sp@@CLASSNAME_Insert", parameters, commandType: CommandType.StoredProcedure);
+                await conn.ExecuteAsync("sp@@ClassName_Insert", parameters, commandType: CommandType.StoredProcedure);
             }
             return true;
         }     
-        // Get a list of @@objectname rows (SQL Select)
+        // Get a list of @@ObjectName rows (SQL Select)
         // This only works if you're already created the stored procedure.
-        public async Task<IEnumerable<@@CLASSNAME>> @@CLASSNAMEList()
+        public async Task<IEnumerable<@@ClassName>> @@ClassNameList()
         {
-            IEnumerable<@@CLASSNAME> @@objectlist;
+            IEnumerable<@@ClassName> @@ObjectList;
             using (var conn = new SqlConnection(_configuration.Value))
             {
-                @@objectlist = await conn.QueryAsync<@@CLASSNAME>("sp@@CLASSNAME_List", commandType: CommandType.StoredProcedure);
+                @@ObjectList = await conn.QueryAsync<@@ClassName>("sp@@ClassName_List", commandType: CommandType.StoredProcedure);
             }
-            return @@objectlist;
+            return @@ObjectList;
         }
       	//Search for data (very generic...you may need to adjust.
-        public async Task<IEnumerable<@@CLASSNAME>> @@CLASSNAMESearch(string @Param)
+        public async Task<IEnumerable<@@ClassName>> @@ClassNameSearch(string @Param)
         {
             var parameters = new DynamicParameters();
             parameters.Add("@Param", Param, DbType.String);
-            IEnumerable<@@CLASSNAME> @@objectlist;
+            IEnumerable<@@ClassName> @@ObjectList;
             using (var conn = new SqlConnection(_configuration.Value))
             {
-                @@objectlist = await conn.QueryAsync<@@CLASSNAME>("sp@@CLASSNAME_Search", parameters, commandType: CommandType.StoredProcedure);
+                @@ObjectList = await conn.QueryAsync<@@ClassName>("sp@@ClassName_Search", parameters, commandType: CommandType.StoredProcedure);
             }
-            return @@objectlist;
+            return @@ObjectList;
         }
         // Search based on date range. Code generator makes wild guess, you 
         // will likely need to adjust field names
-        public async Task<IEnumerable<@@CLASSNAME>> @@CLASSNAMEDateRange(DateTime @StartDate, DateTime @EndDate)
+        public async Task<IEnumerable<@@ClassName>> @@ClassNameDateRange(DateTime @StartDate, DateTime @EndDate)
         {
             var parameters = new DynamicParameters();
             parameters.Add("@StartDate", StartDate, DbType.Date);
             parameters.Add("@EndDate", EndDate, DbType.Date);
-            IEnumerable<@@CLASSNAME>  @@objectlist;
+            IEnumerable<@@ClassName>  @@ObjectList;
             using (var conn = new SqlConnection(_configuration.Value))
             {
-                @@objectlist = await conn.QueryAsync<@@CLASSNAME>("sp@@CLASSNAME_DateRange", parameters, commandType: CommandType.StoredProcedure);
+                @@ObjectList = await conn.QueryAsync<@@ClassName>("sp@@ClassName_DateRange", parameters, commandType: CommandType.StoredProcedure);
             }
-            return @@objectlist;
+            return @@ObjectList;
         }
 
-        // Get one @@objectname based on its @@CLASSNAMEID (SQL Select)
+        // Get one @@ObjectName based on its @@ClassNameID (SQL Select)
         // This only works if you're already created the stored procedure.
-        public async Task<@@CLASSNAME> @@CLASSNAME_GetOne(int @@@PK)
+        public async Task<@@ClassName> @@ClassName_GetOne(int @@@PrimaryKey)
         {
-            @@CLASSNAME @@objectname = new @@CLASSNAME();
+            @@ClassName @@ObjectName = new @@ClassName();
             var parameters = new DynamicParameters();
-            parameters.Add("@@@PK", @@PK, DbType.Int32);
+            parameters.Add("@@@PrimaryKey", @@PrimaryKey, DbType.Int32);
             using (var conn = new SqlConnection(_configuration.Value))
             {
-                @@objectname = await conn.QueryFirstOrDefaultAsync<@@CLASSNAME>("sp@@CLASSNAME_GetOne",parameters,commandType: CommandType.StoredProcedure);
+                @@ObjectName = await conn.QueryFirstOrDefaultAsync<@@ClassName>("sp@@ClassName_GetOne",parameters,commandType: CommandType.StoredProcedure);
             }
-            return @@objectname;
+            return @@ObjectName;
         }
-        // Update one @@CLASSNAME row based on its @@CLASSNAMEID (SQL Update)
+        // Update one @@ClassName row based on its @@ClassNameID (SQL Update)
         // This only works if you're already created the stored procedure.
-        public async Task<bool> @@CLASSNAMEUpdate(@@CLASSNAME @@objectname)
+        public async Task<bool> @@ClassNameUpdate(@@ClassName @@ObjectName)
         {
             using (var conn = new SqlConnection(_configuration.Value))
             {
                 var parameters = new DynamicParameters();
-                @@PARAMETERADDUPDATEONLY
-			    @@PARAMETERSADD
-                await conn.ExecuteAsync("sp@@CLASSNAME_Update", parameters, commandType: CommandType.StoredProcedure);
+                @@ParameterAddUpdateOnly
+			    @@ParametersAdd
+                await conn.ExecuteAsync("sp@@ClassName_Update", parameters, commandType: CommandType.StoredProcedure);
             }
             return true;
         }
 
-        // Physically delete one @@CLASSNAME row based on its @@CLASSNAMEID (SQL Delete)
+        // Physically delete one @@ClassName row based on its @@ClassNameID (SQL Delete)
         // This only works if you're already created the stored procedure.
-        public async Task<bool> @@CLASSNAMEDelete(int @@PK)
+        public async Task<bool> @@ClassNameDelete(int @@PrimaryKey)
         {
             var parameters = new DynamicParameters();
-            parameters.Add("@@@PK", @@PK, DbType.Int32);
+            parameters.Add("@@@PrimaryKey", @@PrimaryKey, DbType.Int32);
             using (var conn = new SqlConnection(_configuration.Value))
             {
-                await conn.ExecuteAsync("sp@@CLASSNAME_Delete",parameters, commandType: CommandType.StoredProcedure);
+                await conn.ExecuteAsync("sp@@ClassName_Delete",parameters, commandType: CommandType.StoredProcedure);
             }
             return true;
         }
         
-        public async Task<IEnumerable<@@CLASSNAME>> @@CLASSNAME_GetDropdown(int @IncludeNumber)
+        public async Task<IEnumerable<@@ClassName>> @@ClassName_GetDropdown(int @IncludeNumber)
             {
                 var parameters = new DynamicParameters();
                 parameters.Add("@IncludeNumber", IncludeNumber, DbType.Int32);
         
-                IEnumerable<@@CLASSNAME> @@objectlist;
+                IEnumerable<@@ClassName> @@ObjectList;
                 using (var conn = new SqlConnection(_configuration.Value))
                     {
-                        @@objectlist = await conn.QueryAsync<@@CLASSNAME>("sp@@CLASSNAME_GetDropdown", parameters, commandType: CommandType.StoredProcedure);
+                        @@ObjectList = await conn.QueryAsync<@@ClassName>("sp@@ClassName_GetDropdown", parameters, commandType: CommandType.StoredProcedure);
                     }
-                return @@objectlist;
+                return @@ObjectList;
             }
         
 

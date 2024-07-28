@@ -1,15 +1,15 @@
--- /Pages/@@CLASSNAMEDelete.razor
-@using @@NAMESPACE.Data
-@page "/@@OBJECTNAMEdelete/{@@PK:int}"
-@inject I@@CLASSNAMEService @@CLASSService
+-- /Pages/@@ClassNameDelete.razor
+@using @@NameSpace.Data
+@page "/@@ObjectNamedelete/{@@PrimaryKey:int}"
+@inject I@@ClassNameService @@ClassService
 @inject NavigationManager NavigationManager
 
 
-<h1 style="text-align:center">Delete a @@CLASSNAME</h1>
-<p style="color:red;text-align:center">Are you sure you want to permanently delete this @@objectname? There is no undo!</p>
+<h1 style="text-align:center">Delete a @@ClassName</h1>
+<p style="color:red;text-align:center">Are you sure you want to permanently delete this @@ObjectName? There is no undo!</p>
 
 <table class="genform">
-	@@CONFIRMDELETEROWS
+	@@ConfirmDeleteRows
     <tr>
         <td colspan="2" style="text-align:center">
             <button class="btn btn-primary" @onclick="@Delete">Delete</button>
@@ -19,28 +19,28 @@
 </table>
 
 @code {
-    // Create a new, empty @@CLASSNAME object
-    @@CLASSNAME @@objectname = new @@CLASSNAME();
+    // Create a new, empty @@ClassName object
+    @@ClassName @@ObjectName = new @@ClassName();
 
     [Parameter]
-    public int @@PK { get; set; }
+    public int @@PrimaryKey { get; set; }
 
     //Executes on page open..
     protected override async Task OnInitializedAsync()
     {
-        @@objectname = await @@CLASSNAMEService.@@CLASSNAME_GetOne(@@PK);
+        @@ObjectName = await @@ClassNameService.@@ClassName_GetOne(@@PrimaryKey);
     }
     //Executes if user confirms the deletion.
     protected async Task Delete()
     {
         // Delete the row and go back to the list. 
         // In the SProcedure you can set IsActive to 0 rather than physically delete.
-        await @@CLASSNAMEService.@@CLASSNAMEDelete(@@PK);
-        NavigationManager.NavigateTo("/@@listpagename");
+        await @@ClassNameService.@@ClassNameDelete(@@PrimaryKey);
+        NavigationManager.NavigateTo("/@@ListPageName");
     }
     // Executes when user clicks the Cancel button.
     void Cancel()
     {
-        NavigationManager.NavigateTo("/@@listpagename");
+        NavigationManager.NavigateTo("/@@ListPageName");
     }
 }

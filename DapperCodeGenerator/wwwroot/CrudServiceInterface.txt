@@ -1,19 +1,19 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using @@NAMESPACE.Models;
+using @@NameSpace.Models;
 
-namespace @@NAMESPACE.Services
+namespace @@NameSpace.Services
 {
-    public interface I@@CLASSNAMEService
+    public interface I@@ClassNameService
     {
-        Task<bool> @@CLASSNAMEInsert(@@CLASSNAME @@objectname);
-        Task<IEnumerable<@@CLASSNAME>> @@CLASSNAMEList();
-        Task<IEnumerable<@@CLASSNAME>> @@CLASSNAMESearch(string Param);
-        Task<IEnumerable<@@CLASSNAME>> @@CLASSNAMEDateRange(DateTime @StartDate, DateTime @EndDate);
-        Task<@@CLASSNAME> @@CLASSNAME_GetOne(int @@PK);
-        Task<bool> @@CLASSNAMEUpdate(@@CLASSNAME @@objectname);
-        Task<bool> @@CLASSNAMEDelete(int @@PK);
-        Task<IEnumerable<@@CLASSNAME>> @@CLASSNAME_GetDropdown(int @IncludeNumber);
+        Task<bool> @@ClassNameInsert(@@ClassName @@ObjectName);
+        Task<IEnumerable<@@ClassName>> @@ClassNameList();
+        Task<IEnumerable<@@ClassName>> @@ClassNameSearch(string Param);
+        Task<IEnumerable<@@ClassName>> @@ClassNameDateRange(DateTime @StartDate, DateTime @EndDate);
+        Task<@@ClassName> @@ClassName_GetOne(int @@PrimaryKey);
+        Task<bool> @@ClassNameUpdate(@@ClassName @@ObjectName);
+        Task<bool> @@ClassNameDelete(int @@PrimaryKey);
+        Task<IEnumerable<@@ClassName>> @@ClassName_GetDropdown(int @IncludeNumber);
     }
 }

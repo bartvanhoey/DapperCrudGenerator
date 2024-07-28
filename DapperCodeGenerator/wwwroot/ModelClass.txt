@@ -1,10 +1,10 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace @@NAMESPACE.Models
+namespace @@NameSpace.Models
 {
-    public class @@CLASSNAME
+    public class @@ClassName
     {
-	@@MODELCODE
+	@@ModelCode
     }
 }

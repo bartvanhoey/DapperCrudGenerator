@@ -1,11 +1,11 @@
 -- Stored Procedure for dropdown.
-CREATE PROCEDURE [dbo].[sp@@CLASSNAME_GetDropdown]
+CREATE PROCEDURE [dbo].[sp@@ClassName_GetDropdown]
         @IncludeNumber int
         AS
         BEGIN
 		-- You'll have to provide your own field names, and maybe change IsActive if you don't have that field
         SELECT        YOUR_BOUND_FIELD, YOU_DROPDOWN-VISIBLE_FIELD
-        FROM            @@TABLENAME
-        WHERE IsActive = 1  OR @@PK = @IncludeNumber
+        FROM            @@TableName
+        WHERE IsActive = 1  OR @@PrimaryKey = @IncludeNumber
         ORDER BY YOUR_ORDER_BY_FIELD 
 END

@@ -4,5 +4,5 @@ namespace DapperCodeGenerator.Services;
 
 public interface ITemplateProcessor
 {
-    Task Process(CodeTemplate? template);
+    Task Process(Template? template);
 }

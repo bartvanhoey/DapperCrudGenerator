@@ -16,14 +16,13 @@ public static class Util
     public static string GetColumnName(string fieldName)
     {
         var columnName = fieldName.Substring(1, fieldName.IndexOf(']') - 1);
-        columnName = char.ToUpper(columnName[0]) + columnName[1..];
-        return columnName;
+        return char.ToUpper(columnName[0]) + columnName[1..];
     }
 
     public static string KeepAlphaCharactersOnly(string input) =>
         Regex.Replace(input, @"[^a-zA-Z\._]", string.Empty);
 
-    public static string KeepNumbersOnly(string input) => Regex.Replace(input, @"[^0-9.]", string.Empty);
+    private static string KeepNumbersOnly(string input) => Regex.Replace(input, @"[^0-9.]", string.Empty);
 
     public static string GetDataType(string fieldName)
     {

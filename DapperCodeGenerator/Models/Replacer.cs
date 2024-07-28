@@ -2,11 +2,25 @@ namespace DapperCodeGenerator.Models;
 
 public class Replacer
 {
+    public Replacer(Template? template, List<Column> columns)
+    {
+        ObjectName = template?.GetClassName()?.ToLower();
+        ClassName = template?.GetClassName();
+        ServiceName = $"{template?.GetClassName()}Service";
+        ListPageName = $"{template?.GetClassName()?.ToLower()}list";
+        TableName = template?.GetTableName();
+        ListName = template?.GetListName();
+        FieldList = template?.CreateTableStatement;
+        NameSpaceName = template?.NamespaceName;
+        InputOneRows = columns.GetInputTextTags(template?.GetClassName());
+        FieldNamesTableHeading = columns.GetTableHeadings();
+        FieldNamesTableRow = columns.GetTableRows(template?.GetClassName());
+    }
     public string SprocAllParams { get; init; } = "";
     public string SprocInsertParams { get; init; } = "";
     public string PrimaryKey { get; init; } = "";
     public string SprocOneParam { get; init; } = "";
-    public string? ObjectName { get; init; } = "";
+    public string? ObjectName { get; init; }
     public string ModelCode { get; init; } = "";
     public string ParametersAddUpdateOnly { get; init; } = "";
     public string ConfirmDeleteRows { get; init; } = "";

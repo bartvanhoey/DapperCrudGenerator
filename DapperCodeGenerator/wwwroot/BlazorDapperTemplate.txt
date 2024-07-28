@@ -18,7 +18,7 @@ Things you need to do in Visual Studio
    add to it the following code.
 
 ---------------------------- /DATA/SqlConnectionConfiguration.cs
-namespace @@NAMESPACE.Data
+namespace @@NameSpace.Data
 {
     // Connection to SQL Server database, used within Data subfolder.
     // You need to set the connection string in appsettings.json and configure Startup.cs yourself.
@@ -55,74 +55,74 @@ services.AddServerSideBlazor(o => o.DetailedErrors = true);
 = select and execute them one at a time.                =
 =========================================================
 -------------- Stored Proc for INSERT
-CREATE PROCEDURE sp@@CLASSNAME_Insert
+CREATE PROCEDURE sp@@ClassName_Insert
 --Parameters for Insert stored procedure
-@@spInsertParams
+@@sprocInsertParams
 AS
 BEGIN
 --SQL for Insert stored procedure
-@@SQLINSERT
+@@SqlInsert
 END
 
 --------------  Stored Proc for SELECT (LIST, just first six fields but you can change in final code.)
-CREATE PROCEDURE sp@@CLASSNAME_List
+CREATE PROCEDURE sp@@ClassName_List
 --No parameters required.
 AS
 BEGIN
 --SQL for Select stored procedure.
-@@SQLSELECTLIST
+@@SqlSelectList
 END
 
 --------------  Stored Proc for SELECT (one)
-CREATE PROCEDURE sp@@CLASSNAME_GetOne
+CREATE PROCEDURE sp@@ClassName_GetOne
 -- Needs one parameter for primary key
-@@@PK int
+@@@PrimaryKey int
 AS 
 BEGIN
 -- SQL Select for one table row
-@@SQLSELECTONE
+@@SqlSelectOne
 END
 
 
 --------------  Stored Proc for SELECT LIKE
-CREATE PROCEDURE sp@@CLASSNAME_Search
+CREATE PROCEDURE sp@@ClassName_Search
 -- One parameter required to identify row to delete.
 @Param varchar(128)
 AS
 BEGIN
 -- SQL for search looking for embedded content. 
-@@SQLSEARCH 
+@@SqlSearch 
 END
 
 ------------- Stored Proc for SELECT DATA RANGE
 -- Another wild guess, but better than nothin'
-CREATE PROCEDURE sp@@CLASSNAME_DateRange
+CREATE PROCEDURE sp@@ClassName_DateRange
 @StartDate date,
 @EndDate date
 AS
 BEGIN
 -- SQL for search looking range of dates
-@@SQLDATERANGE
+@@SqlDateRange
 END
 
 --------------  Stored Proc for UPDATE
-CREATE PROCEDURE sp@@CLASSNAME_Update
+CREATE PROCEDURE sp@@ClassName_Update
 -- Parameters for Update stored procedure.
-@@spAllParams
+@@sprocAllParams
 AS
 BEGIN
 -- SQL for Update stored procedure
-@@SQLUPDATE
+@@SqlUpdate
 END
 
 --------------  Stored Proc for DELETE
-CREATE PROCEDURE sp@@CLASSNAME_Delete
+CREATE PROCEDURE sp@@ClassName_Delete
 -- One parameter required to identify row to delete.
-@@@PK int
+@@@PrimaryKey int
 AS
 BEGIN
 -- SQL for Delete stored procedure (physically deletes, you may want to change this to mark inactive)
-@@SQLDELETE
+@@SqlDelete
 END
 
 
@@ -134,20 +134,20 @@ names shown below.
 
 You should have three classes, per database table, in the Data folder.
 
----------------------------- /DATA/@@CLASSNAME.cs
+---------------------------- /DATA/@@ClassName.cs
 using System;
 using System.ComponentModel.DataAnnotations;
 // This is the model for one row in the database table. You may need to make some adjustments.
-namespace @@NAMESPACE.Data
+namespace @@NameSpace.Data
 {
-    public class @@CLASSNAME
+    public class @@ClassName
     {
-	@@MODELCODE
+	@@ModelCode
     }
 }
 
----------------------------- /DATA/@@CLASSNAMEService.cs
-// This is the service for the @@CLASSNAME class.
+---------------------------- /DATA/@@ClassNameService.cs
+// This is the service for the @@ClassName class.
 using Dapper;
 using Microsoft.Data.SqlClient;
 using System;
@@ -155,127 +155,127 @@ using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
 
-namespace @@NAMESPACE.Data
+namespace @@NameSpace.Data
 {
-    public class @@CLASSNAMEService : I@@CLASSNAMEService
+    public class @@ClassNameService : I@@ClassNameService
     {
         // Database connection
         private readonly SqlConnectionConfiguration _configuration;
-        public @@CLASSNAMEService(SqlConnectionConfiguration configuration)
+        public @@ClassNameService(SqlConnectionConfiguration configuration)
         {
             _configuration = configuration;
         }
-        // Add (create) a @@CLASSNAME table row (SQL Insert)
+        // Add (create) a @@ClassName table row (SQL Insert)
         // This only works if you're already created the stored procedure.
-        public async Task<bool> @@CLASSNAMEInsert(@@CLASSNAME @@objectname)
+        public async Task<bool> @@ClassNameInsert(@@ClassName @@ObjectName)
         {
             using (var conn = new SqlConnection(_configuration.Value))
             {
                 var parameters = new DynamicParameters();
-			@@PARAMETERSADD
+			@@ParametersAdd
                 // Stored procedure method
-                await conn.ExecuteAsync("sp@@CLASSNAME_Insert", parameters, commandType: CommandType.StoredProcedure);
+                await conn.ExecuteAsync("sp@@ClassName_Insert", parameters, commandType: CommandType.StoredProcedure);
             }
             return true;
         }     
-        // Get a list of @@objectname rows (SQL Select)
+        // Get a list of @@ObjectName rows (SQL Select)
         // This only works if you're already created the stored procedure.
-        public async Task<IEnumerable<@@CLASSNAME>> @@CLASSNAMEList()
+        public async Task<IEnumerable<@@ClassName>> @@ClassNameList()
         {
-            IEnumerable<@@CLASSNAME> @@objectlist;
+            IEnumerable<@@ClassName> @@ObjectList;
             using (var conn = new SqlConnection(_configuration.Value))
             {
-                @@objectlist = await conn.QueryAsync<@@CLASSNAME>("sp@@CLASSNAME_List", commandType: CommandType.StoredProcedure);
+                @@ObjectList = await conn.QueryAsync<@@ClassName>("sp@@ClassName_List", commandType: CommandType.StoredProcedure);
             }
-            return @@objectlist;
+            return @@ObjectList;
         }
       	//Search for data (very generic...you may need to adjust.
-        public async Task<IEnumerable<@@CLASSNAME>> @@CLASSNAMESearch(string @Param)
+        public async Task<IEnumerable<@@ClassName>> @@ClassNameSearch(string @Param)
         {
             var parameters = new DynamicParameters();
             parameters.Add("@Param", Param, DbType.String);
-            IEnumerable<@@CLASSNAME> @@objectlist;
+            IEnumerable<@@ClassName> @@ObjectList;
             using (var conn = new SqlConnection(_configuration.Value))
             {
-                @@objectlist = await conn.QueryAsync<@@CLASSNAME>("sp@@CLASSNAME_Search", parameters, commandType: CommandType.StoredProcedure);
+                @@ObjectList = await conn.QueryAsync<@@ClassName>("sp@@ClassName_Search", parameters, commandType: CommandType.StoredProcedure);
             }
-            return @@objectlist;
+            return @@ObjectList;
         }
         // Search based on date range. Code generator makes wild guess, you 
         // will likely need to adjust field names
-        public async Task<IEnumerable<@@CLASSNAME>> @@CLASSNAMEDateRange(DateTime @StartDate, DateTime @EndDate)
+        public async Task<IEnumerable<@@ClassName>> @@ClassNameDateRange(DateTime @StartDate, DateTime @EndDate)
         {
             var parameters = new DynamicParameters();
             parameters.Add("@StartDate", StartDate, DbType.Date);
             parameters.Add("@EndDate", EndDate, DbType.Date);
-            IEnumerable<@@CLASSNAME>  @@objectlist;
+            IEnumerable<@@ClassName>  @@ObjectList;
             using (var conn = new SqlConnection(_configuration.Value))
             {
-                @@objectlist = await conn.QueryAsync<@@CLASSNAME>("sp@@CLASSNAME_DateRange", parameters, commandType: CommandType.StoredProcedure);
+                @@ObjectList = await conn.QueryAsync<@@ClassName>("sp@@ClassName_DateRange", parameters, commandType: CommandType.StoredProcedure);
             }
-            return @@objectlist;
+            return @@ObjectList;
         }
 
-        // Get one @@objectname based on its @@CLASSNAMEID (SQL Select)
+        // Get one @@ObjectName based on its @@ClassNameID (SQL Select)
         // This only works if you're already created the stored procedure.
-        public async Task<@@CLASSNAME> @@CLASSNAME_GetOne(int @@@PK)
+        public async Task<@@ClassName> @@ClassName_GetOne(int @@@PrimaryKey)
         {
-            @@CLASSNAME @@objectname = new @@CLASSNAME();
+            @@ClassName @@ObjectName = new @@ClassName();
             var parameters = new DynamicParameters();
-            parameters.Add("@@@PK", @@PK, DbType.Int32);
+            parameters.Add("@@@PrimaryKey", @@PrimaryKey, DbType.Int32);
             using (var conn = new SqlConnection(_configuration.Value))
             {
-                @@objectname = await conn.QueryFirstOrDefaultAsync<@@CLASSNAME>("sp@@CLASSNAME_GetOne",parameters,commandType: CommandType.StoredProcedure);
+                @@ObjectName = await conn.QueryFirstOrDefaultAsync<@@ClassName>("sp@@ClassName_GetOne",parameters,commandType: CommandType.StoredProcedure);
             }
-            return @@objectname;
+            return @@ObjectName;
         }
-        // Update one @@CLASSNAME row based on its @@CLASSNAMEID (SQL Update)
+        // Update one @@ClassName row based on its @@ClassNameID (SQL Update)
         // This only works if you're already created the stored procedure.
-        public async Task<bool> @@CLASSNAMEUpdate(@@CLASSNAME @@objectname)
+        public async Task<bool> @@ClassNameUpdate(@@ClassName @@ObjectName)
         {
             using (var conn = new SqlConnection(_configuration.Value))
             {
                 var parameters = new DynamicParameters();
-                @@PARAMETERADDUPDATEONLY
-			    @@PARAMETERSADD
-                await conn.ExecuteAsync("sp@@CLASSNAME_Update", parameters, commandType: CommandType.StoredProcedure);
+                @@ParameterAddUpdateOnly
+			    @@ParametersAdd
+                await conn.ExecuteAsync("sp@@ClassName_Update", parameters, commandType: CommandType.StoredProcedure);
             }
             return true;
         }
 
-        // Physically delete one @@CLASSNAME row based on its @@CLASSNAMEID (SQL Delete)
+        // Physically delete one @@ClassName row based on its @@ClassNameID (SQL Delete)
         // This only works if you're already created the stored procedure.
-        public async Task<bool> @@CLASSNAMEDelete(int @@PK)
+        public async Task<bool> @@ClassNameDelete(int @@PrimaryKey)
         {
             var parameters = new DynamicParameters();
-            parameters.Add("@@@PK", @@PK, DbType.Int32);
+            parameters.Add("@@@PrimaryKey", @@PrimaryKey, DbType.Int32);
             using (var conn = new SqlConnection(_configuration.Value))
             {
-                await conn.ExecuteAsync("sp@@CLASSNAME_Delete",parameters, commandType: CommandType.StoredProcedure);
+                await conn.ExecuteAsync("sp@@ClassName_Delete",parameters, commandType: CommandType.StoredProcedure);
             }
             return true;
         }
     }
 }
 
----------------------------- /Data/I@@CLASSNAMEService.cs
-// This is the @@CLASSNAME Interface
+---------------------------- /Data/I@@ClassNameService.cs
+// This is the @@ClassName Interface
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace @@NAMESPACE.Data
+namespace @@NameSpace.Data
 {
-    // Each item below provides an interface to a method in @@CLASSNAMEServices.cs
-    public interface I@@CLASSNAMEService
+    // Each item below provides an interface to a method in @@ClassNameServices.cs
+    public interface I@@ClassNameService
     {
-        Task<bool> @@CLASSNAMEInsert(@@CLASSNAME @@objectname);
-        Task<IEnumerable<@@CLASSNAME>> @@CLASSNAMEList();
-        Task<IEnumerable<@@CLASSNAME>> @@CLASSNAMESearch(string Param);
-        Task<IEnumerable<@@CLASSNAME>> @@CLASSNAMEDateRange(DateTime @StartDate, DateTime @EndDate);
-        Task<@@CLASSNAME> @@CLASSNAME_GetOne(int @@PK);
-        Task<bool> @@CLASSNAMEUpdate(@@CLASSNAME @@objectname);
-        Task<bool> @@CLASSNAMEDelete(int @@PK);
+        Task<bool> @@ClassNameInsert(@@ClassName @@ObjectName);
+        Task<IEnumerable<@@ClassName>> @@ClassNameList();
+        Task<IEnumerable<@@ClassName>> @@ClassNameSearch(string Param);
+        Task<IEnumerable<@@ClassName>> @@ClassNameDateRange(DateTime @StartDate, DateTime @EndDate);
+        Task<@@ClassName> @@ClassName_GetOne(int @@PrimaryKey);
+        Task<bool> @@ClassNameUpdate(@@ClassName @@ObjectName);
+        Task<bool> @@ClassNameDelete(int @@PrimaryKey);
     }
 }
 =======================================================
@@ -285,7 +285,7 @@ namespace @@NAMESPACE.Data
 =  above the comment and code that defines SqlConnectionConfiguration
 ========================================================
 
-services.AddScoped<I@@CLASSNAMEService, @@CLASSNAMEService>();
+services.AddScoped<I@@ClassNameService, @@ClassNameService>();
 
 
 =========================================================
@@ -293,17 +293,17 @@ services.AddScoped<I@@CLASSNAMEService, @@CLASSNAMEService>();
 = and each should be defined as a Razor Component.                                             
 =========================================================
 
----------------------------- /PAGES/@@CLASSNAMEAddEdit.razor
-@using @@NAMESPACE.Data
-@page "/@@OBJECTNAMEaddedit/{@@PK:int}"
-@inject I@@CLASSNAMEService @@CLASSNAMEService
+---------------------------- /PAGES/@@ClassNameAddEdit.razor
+@using @@NameSpace.Data
+@page "/@@ObjectNameaddedit/{@@PrimaryKey:int}"
+@inject I@@ClassNameService @@ClassNameService
 @inject NavigationManager NavigationManager
 
 <h1 style="text-align:center">@pagetitle</h1>
-<EditForm Model="@@@objectname" OnValidSubmit="@@@CLASSNAMESave" class="form-inline">
+<EditForm Model="@@@ObjectName" OnValidSubmit="@@@ClassNameSave" class="form-inline">
 <div class="container">
         <!-- You may want to change some type="" choices to better suit your own data -->
-        @@INPUTONEROWS
+        @@InputOneRows
 
 <div class="row">
 <div class="col-12 errormsg">
@@ -321,65 +321,65 @@ services.AddScoped<I@@CLASSNAMEService, @@CLASSNAMEService>();
 </EditForm>
 
 @code {
-   // Create a new, empty @@CLASSNAME object
-   @@CLASSNAME @@objectname = new @@CLASSNAME();
+   // Create a new, empty @@ClassName object
+   @@ClassName @@ObjectName = new @@ClassName();
 
     [Parameter]
-    public int @@PK { get; set; }
+    public int @@PrimaryKey { get; set; }
 
     // Set default page title and button text
-    public string pagetitle = "Add a @@CLASSNAME";
+    public string pagetitle = "Add a @@ClassName";
     public string buttontext = "Add";
 
     //Executes on page open, set defaults on page.
     protected override async Task OnInitializedAsync()
     {
-        // ============ If the passed-in @@PK is zero, assume new @@CLASSNAME.
-        if (@@PK == 0)
+        // ============ If the passed-in @@PrimaryKey is zero, assume new @@ClassName.
+        if (@@PrimaryKey == 0)
         {
             // Use this block to set for defaults (optional)
         }
         else
         {
-            @@objectname = await @@CLASSNAMEService.@@CLASSNAME_GetOne(@@PK);
+            @@ObjectName = await @@ClassNameService.@@ClassName_GetOne(@@PrimaryKey);
             // Change page title and button text since this is an edit.
-            pagetitle = "Edit @@CLASSNAME";
+            pagetitle = "Edit @@ClassName";
             buttontext = "Update";
         }
     }
     // Executes OnValidSubmit of EditForm above.
-    protected async Task @@CLASSNAMESave()
+    protected async Task @@ClassNameSave()
     {
-        if (@@objectname.@@PRIMARYKEY == 0)
+        if (@@ObjectName.@@PRIMARYKEY == 0)
         {
-            // Insert if @@PK is zero.
-            await @@CLASSService.@@CLASSNAMEInsert(@@objectname);
+            // Insert if @@PrimaryKey is zero.
+            await @@ClassService.@@ClassNameInsert(@@ObjectName);
         }
         else
         {
-            // Update if @@PK not 0
-            await @@CLASSService.@@CLASSNAMEUpdate(@@objectname);
+            // Update if @@PrimaryKey not 0
+            await @@ClassService.@@ClassNameUpdate(@@ObjectName);
         }
-        NavigationManager.NavigateTo("/@@listpagename");
+        NavigationManager.NavigateTo("/@@ListPageName");
     }
     //Executes if user clicks the Cancel button.
     protected void Cancel()
     {
-        NavigationManager.NavigateTo("/@@listpagename");
+        NavigationManager.NavigateTo("/@@ListPageName");
     }
 }
 
----------------------------- /PAGES/@@CLASSNAMEList.razor
-@using @@NAMESPACE.Data
-@page "/@@LISTPAGENAME"
-@inject I@@CLASSNAMEService @@CLASSNAMEService
+---------------------------- /PAGES/@@ClassNameList.razor
+@using @@NameSpace.Data
+@page "/@@ListPageName"
+@inject I@@ClassNameService @@ClassNameService
 
-<h1 style="text-align:center">@@CLASSNAME List</h1>
+<h1 style="text-align:center">@@ClassName List</h1>
 <table id="search-add">
 <tr>
 <td>
-    <!-- Calling @@objectnameaddedit with @@PK of zero configures page for Insert -->
-    <a href="/@@OBJECTNAMEaddedit/0"><span class="oi oi-plus"></span>Add a @@CLASSNAME</a>
+    <!-- Calling @@ObjectNameaddedit with @@PrimaryKey of zero configures page for Insert -->
+    <a href="/@@ObjectNameaddedit/0"><span class="oi oi-plus"></span>Add a @@ClassName</a>
     </td>
     <td>
     <span class="oi oi-magnifying-glass" style="color:blue;"></span>
@@ -390,7 +390,7 @@ services.AddScoped<I@@CLASSNAMEService, @@CLASSNAMEService>();
 
 </table>
 <div id="list" style="display:@Listdisplay">
-@if (@@objectlist == null)
+@if (@@ObjectList == null)
 {
     <p style="text-align:center">
         <img src="../images/loader.gif" />
@@ -405,27 +405,27 @@ else
             </tr>
         <tr>
             <th>Edit</th>
-		@@FIELDNAMESTABLEHEADING
+		@@FieldNamesStableHeading
             <th>Delete</th>
         </tr>
-        @foreach (var @@objectname in @@objectlist)
+        @foreach (var @@ObjectName in @@ObjectList)
         {
     <tr>
         <td>
-            <!-- Calling @@objectnameaddedit with @@PK configures page for Update of that table row -->
-            <a href="@@objectnameaddedit/@@@objectname.@@PRIMARYKEY">
+            <!-- Calling @@ObjectNameaddedit with @@PrimaryKey configures page for Update of that table row -->
+            <a href="@@ObjectNameaddedit/@@@ObjectName.@@PRIMARYKEY">
                 <span class="oi oi-pencil" style="color:blue;"></span>
                 <!-- If you prefer images, comment below and put images in wwwroot/images folder 
                 <img src="../images/iEdit.png" />-->
             </a>
         </td>
-		@@FIELDNAMESTABLEROW
+		@@FieldNamesStableRow
         <!-- If you want to use a checkmark for a IsActive field, here's the basic code  -->
         <!-- You have to uncomment and get the field name right -->
         <!-- <td> -->
             <!-- Provide your own images in wwwroot/images folder -->
-       <!--     @*Show a green check for active @@objectname...*@ -->
-       <!--     @if (@@objectname.IsActive) -->
+       <!--     @*Show a green check for active @@ObjectName...*@ -->
+       <!--     @if (@@ObjectName.IsActive) -->
        <!--     { -->
        <!--     <span class="oi oi-check" style="color:green;"></span> -->
             <!-- If you prefer images, comment below and put images in wwwroot/images folder 
@@ -442,7 +442,7 @@ else
         @* This column for deletes *@
         
         <td>
-            <a href="@@objectnamedelete/@@@objectname.@@PRIMARYKEY">
+            <a href="@@ObjectNamedelete/@@@ObjectName.@@PRIMARYKEY">
             <span class="oi oi-trash" style="color:red;"></span>
             <!-- If you prefer images, uncomment the img tag and put images in wwwroot/images
                 <img src="../images/iTrash.png" alt="Delete" title="Delete" /> -->
@@ -465,13 +465,13 @@ else
     public string Listdisplay = "block";
     public string Errordisplay = "none";
     public string Nowshowing = "Recent Entries";
-    // Create an empty list, named @@objectlist, of empty @@CLASSNAME objects.
-    IEnumerable<@@CLASSNAME> @@objectlist;
+    // Create an empty list, named @@ObjectList, of empty @@ClassName objects.
+    IEnumerable<@@ClassName> @@ObjectList;
     
     protected override async Task OnInitializedAsync()
     {
-        //Populate the list of @@objectname objects from the @@CLASSNAME table.
-        @@objectlist = await @@CLASSNAMEService.@@CLASSNAMEList();
+        //Populate the list of @@ObjectName objects from the @@ClassName table.
+        @@ObjectList = await @@ClassNameService.@@ClassNameList();
     }
     
     //Make pressing ENTER in the search box the same as clicking the Search button.
@@ -489,12 +489,12 @@ else
     {
     //Forces the progress indicator to show while searching.
     if (SearchTerm.Length > 0 ) {
-        @@objectlist = null;
+        @@ObjectList = null;
         Nowshowing = "Contains: " + SearchTerm;
         StateHasChanged();
-        //Does the search and stores result in @@objectlist collection.
-        @@objectlist  = await @@CLASSNAMEService.@@CLASSNAMESearch(SearchTerm);
-        var howmany = @@objectlist.Count();
+        //Does the search and stores result in @@ObjectList collection.
+        @@ObjectList  = await @@ClassNameService.@@ClassNameSearch(SearchTerm);
+        var howmany = @@ObjectList.Count();
         // Show results or error depending on how many found.
           switch (howmany)
           {
@@ -514,7 +514,7 @@ else
         } else {
             //If no search term, just do the default list.
             Nowshowing = "Recent entries";
-            @@objectlist = await @@CLASSNAMEService.@@CLASSNAMEList();
+            @@ObjectList = await @@ClassNameService.@@ClassNameList();
             StateHasChanged();
         }
 
@@ -541,15 +541,15 @@ else
 }
 
 
----------------------------- /Pages/@@CLASSNAMEReport.razor
-@using @@NAMESPACE.Data
-@page "/@@REPORTPAGENAME"
-@inject I@@CLASSNAMEService @@CLASSNAMEService
+---------------------------- /Pages/@@ClassNameReport.razor
+@using @@NameSpace.Data
+@page "/@@ReportPageName"
+@inject I@@ClassNameService @@ClassNameService
 @inject NavigationManager NavigationManager
 
   <div id="date-search-tools">
         <div id="GetDates" style="display:@ToolsVisible">
-        <h1 style="text-align:center">@@CLASSNAME Report</h1>
+        <h1 style="text-align:center">@@ClassName Report</h1>
             <table>
                 <tr>
                     <td>
@@ -572,25 +572,25 @@ else
       <table id="search-buttons">
             <tr>
                 <td><button class="btn btn-primary" onclick="window.print()">Print or PDF</button></td>
-                <td><button class="btn btn-secondary" onclick="location.href='@@objectnamereport'">Cancel</button>
+                <td><button class="btn btn-secondary" onclick="location.href='@@ObjectNamereport'">Cancel</button>
                 </td>
             </tr>
         </table>
-    <h1 style="text-align:center">@@CLASSNAME Report</h1>
+    <h1 style="text-align:center">@@ClassName Report</h1>
     <p style="text-align:center;">From @StartDate.ToShortDateString() to @EndDate.ToShortDateString()</p>
         <table class="genlist">
             <thead>
                 <tr>
-              		@@FIELDNAMESTABLEHEADING
+              		@@FieldNamesStableHeading
                 </tr>
             </thead>
             <tbody>
-                @if (@@objectlist != null)
+                @if (@@ObjectList != null)
                 {
-                    @foreach (var @@objectname in @@objectlist)
+                    @foreach (var @@ObjectName in @@ObjectList)
                     {
                     <tr>
-	                   	@@FIELDNAMESTABLEROW
+	                   	@@FieldNamesStableRow
                     </tr>
                     }
                 }
@@ -599,7 +599,7 @@ else
         <table id="search-buttons">
             <tr>
                 <td><button class="btn btn-primary" onclick="window.print()">Print or PDF</button></td>
-                <td><button class="btn btn-secondary" onclick="location.href='@@objectnamereport'">Cancel</button>
+                <td><button class="btn btn-secondary" onclick="location.href='@@ObjectNamereport'">Cancel</button>
                 </td>
             </tr>
         </table>
@@ -619,11 +619,11 @@ else
         public string Errordisplay = "none";
 
         // Create an empty list, named videos, of empty Video objects.
-        IEnumerable<@@CLASSNAME> @@objectlist;
+        IEnumerable<@@ClassName> @@ObjectList;
 
         protected override void OnInitialized()
         {
-            @if (@@objectlist == null)
+            @if (@@ObjectList == null)
             {
                 ShowReport(false);
             }
@@ -660,11 +660,11 @@ else
         //Do the search
         private async void Search()
         {
-            @@objectlist = null;
+            @@ObjectList = null;
             StateHasChanged();
             //Does the search and stores result in collection.
-            @@objectlist = await @@CLASSNAMEService.@@CLASSNAMEDateRange(StartDate, EndDate);
-            var howmany = @@objectlist.Count();
+            @@ObjectList = await @@ClassNameService.@@ClassNameDateRange(StartDate, EndDate);
+            var howmany = @@ObjectList.Count();
             // Show results or error depending on how many found.
             if (howmany < 1 ) {
                errorMessage("Not found, try another search");
@@ -695,18 +695,18 @@ else
     }
 
 
----------------------------- /Pages/@@CLASSNAMEDelete.razor
-@using @@NAMESPACE.Data
-@page "/@@OBJECTNAMEdelete/{@@PK:int}"
-@inject I@@CLASSNAMEService @@CLASSService
+---------------------------- /Pages/@@ClassNameDelete.razor
+@using @@NameSpace.Data
+@page "/@@ObjectNamedelete/{@@PrimaryKey:int}"
+@inject I@@ClassNameService @@ClassService
 @inject NavigationManager NavigationManager
 
 
-<h1 style="text-align:center">Delete a @@CLASSNAME</h1>
-<p style="color:red;text-align:center">Are you sure you want to permanently delete this @@objectname? There is no undo!</p>
+<h1 style="text-align:center">Delete a @@ClassName</h1>
+<p style="color:red;text-align:center">Are you sure you want to permanently delete this @@ObjectName? There is no undo!</p>
 
 <table class="genform">
-	@@CONFIRMDELETEROWS
+	@@ConfirmDeleteRows
     <tr>
         <td colspan="2" style="text-align:center">
             <button class="btn btn-primary" @onclick="@Delete">Delete</button>
@@ -716,29 +716,29 @@ else
 </table>
 
 @code {
-    // Create a new, empty @@CLASSNAME object
-    @@CLASSNAME @@objectname = new @@CLASSNAME();
+    // Create a new, empty @@ClassName object
+    @@ClassName @@ObjectName = new @@ClassName();
 
     [Parameter]
-    public int @@PK { get; set; }
+    public int @@PrimaryKey { get; set; }
 
     //Executes on page open..
     protected override async Task OnInitializedAsync()
     {
-        @@objectname = await @@CLASSNAMEService.@@CLASSNAME_GetOne(@@PK);
+        @@ObjectName = await @@ClassNameService.@@ClassName_GetOne(@@PrimaryKey);
     }
     //Executes if user confirms the deletion.
     protected async Task Delete()
     {
         // Delete the row and go back to the list. 
         // In the SProc you can set IsActive to 0 rather than physically delete.
-        await @@CLASSNAMEService.@@CLASSNAMEDelete(@@PK);
-        NavigationManager.NavigateTo("/@@listpagename");
+        await @@ClassNameService.@@ClassNameDelete(@@PrimaryKey);
+        NavigationManager.NavigateTo("/@@ListPageName");
     }
     // Executes when user clicks the Cancel button.
     void Cancel()
     {
-        NavigationManager.NavigateTo("/@@listpagename");
+        NavigationManager.NavigateTo("/@@ListPageName");
     }
 }
 
@@ -749,8 +749,8 @@ else
 = however you like.
 =========================================================
 <li class="nav-item px-3">
-   <NavLink class="nav-link" href="@@LISTPAGENAME" Match="NavLinkMatch.All">
-      <span class="oi" aria-hidden="true"></span>@@CLASSNAME
+   <NavLink class="nav-link" href="@@ListPageName" Match="NavLinkMatch.All">
+      <span class="oi" aria-hidden="true"></span>@@ClassName
    </NavLink>
 </li>
 
@@ -759,46 +759,46 @@ else
 = some code to help, but you;ll have to flesh-out the details on your own
 ==========================================================================
 ------------------------- Stored Procedure for dropdown.
-CREATE PROCEDURE [dbo].[sp@@CLASSNAME_GetDropdown]
+CREATE PROCEDURE [dbo].[sp@@ClassName_GetDropdown]
         @IncludeNumber int
         AS
         BEGIN
 		-- You'll have to provide your own field names, and maybe change IsActive if you don't have that field
         SELECT        YOUR_BOUND_FIELD, YOU_DROPDOWN-VISIBLE_FIELD
-        FROM            @@TABLENAME
-        WHERE IsActive = 1  OR @@PK = @IncludeNumber
+        FROM            @@TableName
+        WHERE IsActive = 1  OR @@PrimaryKey = @IncludeNumber
         ORDER BY YOUR_ORDER_BY_FIELD 
 END
 
 ---------------------------- For the Service Class.
-public async Task<IEnumerable<@@CLASSNAME>> @@CLASSNAME_GetDropdown(int @IncludeNumber)
+public async Task<IEnumerable<@@ClassName>> @@ClassName_GetDropdown(int @IncludeNumber)
     {
         var parameters = new DynamicParameters();
         parameters.Add("@IncludeNumber", IncludeNumber, DbType.Int32);
 
-        IEnumerable<@@CLASSNAME> @@objectlist;
+        IEnumerable<@@ClassName> @@ObjectList;
         using (var conn = new SqlConnection(_configuration.Value))
             {
-                @@objectlist; = await conn.QueryAsync<@@CLASSNAME>("sp@@CLASSNAME_GetDropdown", parameters, commandType: CommandType.StoredProcedure);
+                @@ObjectList; = await conn.QueryAsync<@@ClassName>("sp@@ClassName_GetDropdown", parameters, commandType: CommandType.StoredProcedure);
             }
-        return @@objectlist;
+        return @@ObjectList;
     }
 
 ---------------------------- For the Iservice Class.
-Task<IEnumerable<@@CLASSNAME>> @@CLASSNAME_GetDropdown(int @IncludeNumber);
+Task<IEnumerable<@@ClassName>> @@ClassName_GetDropdown(int @IncludeNumber);
 
 ---------------------------- For the top of AddEdit page.
-@inject I@@CLASSNAMEService @@CLASSNAMEService
+@inject I@@ClassNameService @@ClassNameService
 
 ---------------------------- Near the top of the @Code{} section.
 //For the dropdown
-@@CLASSNAME @@objectname = new @@CLASSNAME();
-IEnumerable<@@CLASSNAME> @@objectlist;
+@@ClassName @@ObjectName = new @@ClassName();
+IEnumerable<@@ClassName> @@ObjectList;
 
 
 ------------------------- Code to populate dropdown for new INSERT rows (in OnInitAsync when Row ID is zero):
 //Populate the dropdown, no inActive items required on new entry 
-@@objectlist = await @@CLASSNAMEService.@@CLASSNAME_GetDropdown(0);
+@@ObjectList = await @@ClassNameService.@@ClassName_GetDropdown(0);
 
 ------------------------ Code to populate dropdown for new UPDATE rows (in OnInitAsync when Row ID is NOT zero):
 //When doing an update, include the id of the current item in case
@@ -806,15 +806,15 @@ IEnumerable<@@CLASSNAME> @@objectlist;
 MAINPAGE x = new MAINPAGE();
 x = await MAINPAGESERVICE.MAINPAGE_GetOne(ID OF ITEM ON MAIN PAGE);
 //Need to include this row's selected item in the dropdown, even it it's no longer active.
-@@objectlist = await @@CLASSNAMEService.@@CLASSNAME_GetOne(KEY_OF_AddEdit_PAGE_ROW);
+@@ObjectList = await @@ClassNameService.@@ClassName_GetOne(KEY_OF_AddEdit_PAGE_ROW);
 
 ------------------------ The actual select control on the AddEdit page where user makes their choice.
 <InputSelect @bind-Value="MAINPAGE.KEYVALUE" class='form-control' id='KEYVALUE'>
     @if (objectlist != null)
     {
-        @foreach (var @@objectname in @@objectlist)
+        @foreach (var @@ObjectName in @@ObjectList)
             {
-                <option value="@@objectname.KEYVALUE">@@objectname.FIELD_THAT_SHOWS_IN_DROPDOWN</option>
+                <option value="@@ObjectName.KEYVALUE">@@ObjectName.FIELD_THAT_SHOWS_IN_DROPDOWN</option>
             }
     }
 </InputSelect>

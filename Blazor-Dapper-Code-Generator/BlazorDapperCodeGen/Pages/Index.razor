@@ -57,7 +57,8 @@
 </p>
 
 
-@code{ Codetemplate codetemplate = new Codetemplate();
+@code{ 
+    Codetemplate codetemplate = new Codetemplate();
     string tablename, primaryKey, sqlfieldsinsert1, sqlfieldsinsert2, modelfield, parametersadd, inputtag, sqldelete, sqlselectlist, sqlselectone, sqlinsert, sqlupdate, sqlsearch, sqldaterange, sqlDateSearchWhereClause, shortfieldlist;
     int iDateCounter = 0;
     public string rawtemplate = System.IO.File.ReadAllText(@"BlazorDapperTemplate.txt");
@@ -111,7 +112,9 @@
         rawtemplate = rawtemplate.Replace("@@objectlist", listname);
         rawtemplate = rawtemplate.Replace("@@listpagename", listpagename);
 
-        @codetemplate.GeneratedCode = rawtemplate;
+        codetemplate.GeneratedCode = rawtemplate; 
+
+
     }
 
     public List<Tablefield> NormalizeFieldNames(string rawtext, string objectname)

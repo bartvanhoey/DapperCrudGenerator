@@ -1,12 +1,12 @@
--- /Pages/@@CLASSNAMEReport.razor
-@using @@NAMESPACE.Data
-@page "/@@REPORTPAGENAME"
-@inject I@@CLASSNAMEService @@CLASSNAMEService
+-- /Pages/@@ClassNameReport.razor
+@using @@NameSpace.Data
+@page "/@@ReportPageName"
+@inject I@@ClassNameService @@ClassNameService
 @inject NavigationManager NavigationManager
 
   <div id="date-search-tools">
         <div id="GetDates" style="display:@ToolsVisible">
-        <h1 style="text-align:center">@@CLASSNAME Report</h1>
+        <h1 style="text-align:center">@@ClassName Report</h1>
             <table>
                 <tr>
                     <td>
@@ -29,25 +29,25 @@
       <table id="search-buttons">
             <tr>
                 <td><button class="btn btn-primary" onclick="window.print()">Print or PDF</button></td>
-                <td><button class="btn btn-secondary" onclick="location.href='@@objectnamereport'">Cancel</button>
+                <td><button class="btn btn-secondary" onclick="location.href='@@ObjectNamereport'">Cancel</button>
                 </td>
             </tr>
         </table>
-    <h1 style="text-align:center">@@CLASSNAME Report</h1>
+    <h1 style="text-align:center">@@ClassName Report</h1>
     <p style="text-align:center;">From @StartDate.ToShortDateString() to @EndDate.ToShortDateString()</p>
         <table class="genlist">
             <thead>
                 <tr>
-              		@@FIELDNAMESTABLEHEADING
+              		@@FieldNamesStableHeading
                 </tr>
             </thead>
             <tbody>
-                @if (@@objectlist != null)
+                @if (@@ObjectList != null)
                 {
-                    @foreach (var @@objectname in @@objectlist)
+                    @foreach (var @@ObjectName in @@ObjectList)
                     {
                     <tr>
-	                   	@@FIELDNAMESTABLEROW
+	                   	@@FieldNamesStableRow
                     </tr>
                     }
                 }
@@ -56,7 +56,7 @@
         <table id="search-buttons">
             <tr>
                 <td><button class="btn btn-primary" onclick="window.print()">Print or PDF</button></td>
-                <td><button class="btn btn-secondary" onclick="location.href='@@objectnamereport'">Cancel</button>
+                <td><button class="btn btn-secondary" onclick="location.href='@@ObjectNamereport'">Cancel</button>
                 </td>
             </tr>
         </table>
@@ -76,11 +76,11 @@
         public string Errordisplay = "none";
 
         // Create an empty list, named videos, of empty Video objects.
-        IEnumerable<@@CLASSNAME> @@objectlist;
+        IEnumerable<@@ClassName> @@ObjectList;
 
         protected override void OnInitialized()
         {
-            @if (@@objectlist == null)
+            @if (@@ObjectList == null)
             {
                 ShowReport(false);
             }
@@ -117,11 +117,11 @@
         //Do the search
         private async void Search()
         {
-            @@objectlist = null;
+            @@ObjectList = null;
             StateHasChanged();
             //Does the search and stores result in collection.
-            @@objectlist = await @@CLASSNAMEService.@@CLASSNAMEDateRange(StartDate, EndDate);
-            var howmany = @@objectlist.Count();
+            @@ObjectList = await @@ClassNameService.@@ClassNameDateRange(StartDate, EndDate);
+            var howmany = @@ObjectList.Count();
             // Show results or error depending on how many found.
             if (howmany < 1 ) {
                errorMessage("Not found, try another search");

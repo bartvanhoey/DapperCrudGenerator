@@ -1,14 +1,14 @@
--- /PAGES/@@CLASSNAMEAddEdit.razor
-@using @@NAMESPACE.Data
-@page "/@@OBJECTNAMEaddedit/{@@PK:int}"
-@inject I@@CLASSNAMEService @@CLASSNAMEService
+-- /PAGES/@@ClassNameAddEdit.razor
+@using @@NameSpace.Data
+@page "/@@ObjectNameaddedit/{@@PrimaryKey:int}"
+@inject I@@ClassNameService @@ClassNameService
 @inject NavigationManager NavigationManager
 
 <h1 style="text-align:center">@pagetitle</h1>
-<EditForm Model="@@@objectname" OnValidSubmit="@@@CLASSNAMESave" class="form-inline">
+<EditForm Model="@@@ObjectName" OnValidSubmit="@@@ClassNameSave" class="form-inline">
 <div class="container">
         <!-- You may want to change some type="" choices to better suit your own data -->
-        @@INPUTONEROWS
+        @@InputOneRows
 
 <div class="row">
 <div class="col-12 errormsg">
@@ -26,50 +26,50 @@
 </EditForm>
 
 @code {
-   // Create a new, empty @@CLASSNAME object
-   @@CLASSNAME @@objectname = new @@CLASSNAME();
+   // Create a new, empty @@ClassName object
+   @@ClassName @@ObjectName = new @@ClassName();
 
     [Parameter]
-    public int @@PK { get; set; }
+    public int @@PrimaryKey { get; set; }
 
     // Set default page title and button text
-    public string pagetitle = "Add a @@CLASSNAME";
+    public string pagetitle = "Add a @@ClassName";
     public string buttontext = "Add";
 
     //Executes on page open, set defaults on page.
     protected override async Task OnInitializedAsync()
     {
-        // ============ If the passed-in @@PK is zero, assume new @@CLASSNAME.
-        if (@@PK == 0)
+        // ============ If the passed-in @@PrimaryKey is zero, assume new @@ClassName.
+        if (@@PrimaryKey == 0)
         {
             // Use this block to set for defaults (optional)
         }
         else
         {
-            @@objectname = await @@CLASSNAMEService.@@CLASSNAME_GetOne(@@PK);
+            @@ObjectName = await @@ClassNameService.@@ClassName_GetOne(@@PrimaryKey);
             // Change page title and button text since this is an edit.
-            pagetitle = "Edit @@CLASSNAME";
+            pagetitle = "Edit @@ClassName";
             buttontext = "Update";
         }
     }
     // Executes OnValidSubmit of EditForm above.
-    protected async Task @@CLASSNAMESave()
+    protected async Task @@ClassNameSave()
     {
-        if (@@objectname.@@PRIMARYKEY == 0)
+        if (@@ObjectName.@@PRIMARYKEY == 0)
         {
-            // Insert if @@PK is zero.
-            await @@CLASSService.@@CLASSNAMEInsert(@@objectname);
+            // Insert if @@PrimaryKey is zero.
+            await @@ClassService.@@ClassNameInsert(@@ObjectName);
         }
         else
         {
-            // Update if @@PK not 0
-            await @@CLASSService.@@CLASSNAMEUpdate(@@objectname);
+            // Update if @@PrimaryKey not 0
+            await @@ClassService.@@ClassNameUpdate(@@ObjectName);
         }
-        NavigationManager.NavigateTo("/@@listpagename");
+        NavigationManager.NavigateTo("/@@ListPageName");
     }
     //Executes if user clicks the Cancel button.
     protected void Cancel()
     {
-        NavigationManager.NavigateTo("/@@listpagename");
+        NavigationManager.NavigateTo("/@@ListPageName");
     }
 }

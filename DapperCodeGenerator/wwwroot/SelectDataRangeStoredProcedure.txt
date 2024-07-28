@@ -1,10 +1,10 @@
 -- Stored Procedure for SELECT DATA RANGE
 -- Another wild guess, but better than nothin'
-CREATE PROCEDURE sp@@CLASSNAME_DateRange
+CREATE PROCEDURE sp@@ClassName_DateRange
 @StartDate date,
 @EndDate date
 AS
 BEGIN
 -- SQL for search looking range of dates
-@@SQLDATERANGE
+@@SqlDateRange
 END

@@ -1,4 +1,4 @@
-namespace @@NAMESPACE.Data
+namespace @@NameSpace.Data
 {
     // Connection to SQL Server database, used within Data subfolder.
     // You need to set the connection string in appsettings.json and configure Startup.cs yourself.
